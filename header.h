@@ -89,7 +89,7 @@ typedef struct passinfo
 	int env_changed;
 	int status;
 
-	char **cmd_buf; /* pointer to cmd ; chain buffer, for memory mangement */
+	char **cmd_buf; /* pointer to CMD ; chain buffer, for memory mangement */
 	int cmd_buf_type; /* CMD_type ||, &&, ; */
 	int readfd;
 	int histcount;
@@ -117,10 +117,10 @@ int find_builtin(info_t *);
 void find_cmd(info_t *);
 void fork_cmd(info_t *);
 
-/* path.c */
-int is_cmd(info_t *, char *);
-char *dup_chars(char *, int, int);
-char *find_path(info_t *, char *, char *);
+/* PATH.c */
+int isCMD(info_t *, char *);
+char *duplCharacters(char *, int, int);
+char *findPath(info_t *, char *, char *);
 
 /* loophsh.c */
 int loophsh(char **);
@@ -131,45 +131,43 @@ int _eputchar(char);
 int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
 
-/* string_functions.c */
-int _strlen(char *);
-int _strcmp(char *, char *);
-char *starts_with(const char *, const char *);
-char *_strcat(char *, char *);
+/* stringFun.c */
+int getStringLength(char *);
+int compareStrings(char *, char *);
+char *startsWith(const char *, const char *);
+char *concatenetStrings(char *, char *);
+char *StringCopy(char *, char *, int);
 
-/* string_functions2.c */
-char *_strcpy(char *, char *);
-char *_strdup(const char *);
-void _puts(char *);
-int _putchar(char);
+/* stringFun3.c */
+char *concatenatesStrings(char *, char *, int);
+char *locateChar(char *, char);
+char **SplitString2(char *, char);
 
-/* string_functions3.c */
-char *_strncpy(char *, char *, int);
-char *_strncat(char *, char *, int);
-char *_strchr(char *, char);
-
-/* string_functions4.c */
-char **strtow(char *, char *);
-char **strtow2(char *, char);
+/* stringFun2.c */
+char *copyStrings(char *, char *);
+char *duplcatString(const char *);
+void Puts(char *);
+int PutCharacter(char);
+char **SplitString(char *, char *);
 
 /* memory_functions */
-char *_memset(char *, char, unsigned int);
-void ffree(char **);
-void *_realloc(void *, unsigned int, unsigned int);
+char *fillMemoryWith(char *, char, unsigned int);
+void freeFun(char **);
+void *reAllocat(void *, unsigned int, unsigned int);
 
 /* memory_functions2.c */
-int bfree(void **);
+int freePointers(void **);
 
 /* more_functions.c */
-int interactive(info_t *);
-int is_delim(char, char *);
-int _isalpha(int);
-int _atoi(char *);
+int IsInteractive(info_t *);
+int IsDelimeter(char, char *);
+int ISAlphabetic(int);
+int StrToInt(char *);
 
 /* more_functions2.c */
-int _erratoi(char *);
-void print_error(info_t *, char *);
-int print_d(int, int);
+int StringToInteger(char *);
+void PrintError(info_t *, char *);
+int printDescriptor(int, int);
 char *convert_number(long int, int, int);
 void remove_comments(char *);
 
