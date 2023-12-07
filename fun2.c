@@ -12,7 +12,7 @@ int StringToInteger(char *s)
 	unsigned long int result = 0;
 
 	if (*s == '+')
-		s++; 
+		s++;
 	for (i = 0;  s[i] != '\0'; i++)
 	{
 		if (s[i] >= '0' && s[i] <= '9')
@@ -30,40 +30,40 @@ int StringToInteger(char *s)
 
 /**
  * PrintError - prints an error message
- * @info: the parameter & return info struct
+ * @infolist: the parameter & return infolist struct
  * @estr: string containing specified error type
  * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void PrintError(info_t *info, char *estr)
+void PrintError(infolist_t *infolist, char *estr)
 {
-	_eputs(info->fname);
-	_eputs(": ");
-	printDescriptor(info->line_count, STDERR_FILENO);
-	_eputs(": ");
-	_eputs(info->argv[0]);
-	_eputs(": ");
-	_eputs(estr);
+	errPrintStr(infolist->fname);
+	errPrintStr(": ");
+	printDescriptor(infolist->err_line_num, STDERR_FILENO);
+	errPrintStr(": ");
+	errPrintStr(infolist->argument_v[0]);
+	errPrintStr(": ");
+	errPrintStr(estr);
 }
 
 /**
  * printDescriptor - function prints a decimal (integer) number (base 10)
  * @input: the input
- * @fd: the filedescriptor to write to
+ * @fileDes: the filedescriptor to write to
  *
  * Return: number of characters printed
  */
-int printDescriptor(int input, int fd)
+int printDescriptor(int input, int fileDes)
 {
 	int (*__putchar)(char) = PutCharacter;
 	int i, count = 0;
 	unsigned int _abs_, current;
 
 /*
-* If the file descriptor is STDERR_FILENO, use _eputchar for error output
+* If the file descriptor is STDERR_FILENO, use errPrintChar for error output
 */
-	if (fd == STDERR_FILENO)
-		__putchar = _eputchar;/*Function pointer for character output*/
+	if (fileDes == STDERR_FILENO)
+		__putchar = errPrintChar;/*Function pointer for character output*/
 /*Handle negative numbers*/
 	if (input < 0)
 	{
@@ -93,29 +93,35 @@ int printDescriptor(int input, int fd)
 
 /**
  * convert_number - converter function, a clone of itoa
- * @num: number
+ * @number: number
  * @base: base
  * @flags: argument flags
  *
  * Return: string
  */
-char *convert_number(long int num, int base, int flags)
+char *convert_number(long int number, int base, int flags)
 {
 	static char *array;
 	static char buffer[50];
 	char sign = 0;
 	char *ptr;
-	unsigned long n = num;
+	unsigned long n = number;
 
-/*If the number is negative and the CONVERT_UNSIGNED flag is not set, adjust the sign*/
-	if (!(flags & CONVERT_UNSIGNED) && num < 0)
+/*
+* If the number is negative and the unsignedConverter
+* flag is not set, adjust the sign
+*/
+	if (!(flags & unsignedConverter) && number < 0)
 	{
-		n = -num;
+		n = -number;
 		sign = '-';
 
 	}
-/*Set the character array based on the flags for lowercase or uppercase representation*/
-	array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
+/*
+* Set the character array based on the
+* flags for lowercase or uppercase representation
+*/
+	array = flags & lowerCaseConverter ? "0123456789abcdef" : "0123456789ABCDEF";
 
 /*Set the pointer to the end of the buffer*/
 	ptr = &buffer[49];
@@ -127,7 +133,10 @@ char *convert_number(long int num, int base, int flags)
 		n /= base;
 	} while (n != 0);
 
-/*If the number was negative, add the sign character to the beginning of the buffer*/
+/*
+* If the number was negative,
+* the sign character to the beginning of the buffer
+*/
 	if (sign)
 		*--ptr = sign;
 /*Return a pointer to the resulting string*/

@@ -39,78 +39,78 @@ char *copyStrings(char *dest, char *src)
 int PutCharacter(char c)
 {
 	static int i;
-	static char buf[WRITE_BUF_SIZE];
+	static char buf[writeBufferSize];
 
-	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == bufferFlush || i >= writeBufferSize)
 	{
 		write(1, buf, i);
 		i = 0;
 	}
-	if (c != BUF_FLUSH)
+	if (c != bufferFlush)
 		buf[i++] = c;
 	return (1);
 }
 
 /**
  *Puts - prints an input string
- *@str: the string to be printed
+ *@string: the string to be printed
  *
  * Return: Nothing
  */
-void Puts(char *str)
+void Puts(char *string)
 {
 	int i = 0;
 
-	if (!str)
+	if (!string)
 		return;
-	while (str[i] != '\0')
+	while (string[i] != '\0')
 	{
-		PutCharacter(str[i]);
+		PutCharacter(string[i]);
 		i++;
 	}
 }
 
 /**
  * duplcatString - duplicates a string
- * @str: the string to duplicate
+ * @string: the string to duplicate
  *
  * Return: pointer to the duplicated string
  */
-char *duplcatString(const char *str)
+char *duplcatString(const char *string)
 {
 	int length = 0;
 	char *ret;
 
-	if (str == NULL)
+	if (string == NULL)
 		return (NULL);
-	while (*str++)
+	while (*string++)
 		length++;
 	ret = malloc(sizeof(char) * (length + 1));
 	if (!ret)
 		return (NULL);
 	for (length++; length--;)
-		ret[length] = *--str;
+		ret[length] = *--string;
 	return (ret);
 }
 
 /**
  * **SplitString - splits a string into words. Repeat delimiters are ignored
- * @str: the input string
+ * @string: the input string
  * @d: the delimeter string
  * Return: a pointer to an array of strings, or NULL on failure
  */
 
-char **SplitString(char *str, char *d)
+char **SplitString(char *string, char *d)
 {
 	int i, j, k, m, numwords = 0;
 	char **s;
 
-	if (str == NULL || str[0] == 0)
+	if (string == NULL || string[0] == 0)
 		return (NULL);
 	if (!d)
 		d = " ";
-	for (i = 0; str[i] != '\0'; i++)
-		if (!IsDelimeter(str[i], d) && (IsDelimeter(str[i + 1], d) || !str[i + 1]))
+	for (i = 0; string[i] != '\0'; i++)
+		if (!IsDelimeter(string[i], d) && (IsDelimeter(string[i + 1], d) || !string[i + 1]))
 			numwords++;
 
 	if (numwords == 0)
@@ -120,10 +120,10 @@ char **SplitString(char *str, char *d)
 		return (NULL);
 	for (i = 0, j = 0; j < numwords; j++)
 	{
-		while (IsDelimeter(str[i], d))
+		while (IsDelimeter(string[i], d))
 			i++;
 		k = 0;
-		while (!IsDelimeter(str[i + k], d) && str[i + k])
+		while (!IsDelimeter(string[i + k], d) && string[i + k])
 			k++;
 		s[j] = malloc((k + 1) * sizeof(char));
 		if (!s[j])
@@ -134,7 +134,7 @@ char **SplitString(char *str, char *d)
 			return (NULL);
 		}
 		for (m = 0; m < k; m++)
-			s[j][m] = str[i++];
+			s[j][m] = string[i++];
 		s[j][m] = 0;
 	}
 	s[j] = NULL;

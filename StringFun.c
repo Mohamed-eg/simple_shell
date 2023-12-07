@@ -45,7 +45,7 @@ int compareStrings(char *s1, char *s2)
  * @haystack: string to search
  * @needle: the substring to find
  *
- * Return: address of next char of haystack or NULL
+ * Return: address of next_node char of haystack or NULL
  */
 char *startsWith(const char *haystack, const char *needle)
 {

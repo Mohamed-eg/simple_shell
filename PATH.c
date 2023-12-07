@@ -2,17 +2,17 @@
 
 /**
  * isCMD - determines if a file is an executable command
- * @info: the info struct
- * @path: path to the file
+ * @infolist: the infolist struct
+ * @str_path: str_path to the file
  *
  * Return: 1 if true, 0 otherwise
  */
-int isCMD(info_t *info, char *path)
+int isCMD(infolist_t *infolist, char *str_path)
 {
 	struct stat st;
 
-	(void)info;
-	if (!path || stat(path, &st))
+	(void)infolist;
+	if (!str_path || stat(str_path, &st))
 		return (0);
 
 	if (st.st_mode & S_IFREG)
@@ -44,38 +44,38 @@ char *duplCharacters(char *patheString, int start, int stop)
 
 /**
  * findPath - finds this CMD in the PATH string
- * @info: the info struct
+ * @infolist: the infolist struct
  * @patheString: the PATH string
  * @CMD: the CMD to find
  *
- * Return: full path of CMD if found or NULL
+ * Return: full str_path of CMD if found or NULL
  */
-char *findPath(info_t *info, char *patheString, char *CMD)
+char *findPath(infolist_t *infolist, char *patheString, char *CMD)
 {
 	int i = 0, currentPos = 0;
-	char *path;
+	char *str_path;
 
 	if (!patheString)
 		return (NULL);
 	if ((getStringLength(CMD) > 2) && startsWith(CMD, "./"))
 	{
-		if (isCMD(info, CMD))
+		if (isCMD(infolist, CMD))
 			return (CMD);
 	}
 	while (1)
 	{
 		if (!patheString[i] || patheString[i] == ':')
 		{
-			path = duplCharacters(patheString, currentPos, i);
-			if (!*path)
-				concatenetStrings(path, CMD);
+			str_path = duplCharacters(patheString, currentPos, i);
+			if (!*str_path)
+				concatenetStrings(str_path, CMD);
 			else
 			{
-				concatenetStrings(path, "/");
-				concatenetStrings(path, CMD);
+				concatenetStrings(str_path, "/");
+				concatenetStrings(str_path, CMD);
 			}
-			if (isCMD(info, path))
-				return (path);
+			if (isCMD(infolist, str_path))
+				return (str_path);
 			if (!patheString[i])
 				break;
 			currentPos = i;

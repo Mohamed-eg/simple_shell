@@ -2,13 +2,13 @@
 
 /**
  * IsInteractive - returns true if shell is IsInteractive mode
- * @info: struct address
+ * @infolist: struct address
  *
  * Return: 1 if IsInteractive mode, 0 otherwise
  */
-int IsInteractive(info_t *info)
+int IsInteractive(infolist_t *infolist)
 {
-	return (isatty(STDIN_FILENO) && info->readfd <= 2);
+	return (isatty(STDIN_FILENO) && infolist->readfd <= 2);
 }
 
 /**
@@ -75,8 +75,8 @@ int StrToInt(char *s)
 }
 /*
 * for exampl
-* char str[] = "-123";
-* int result = StrToInt(str);
+* char string[] = "-123";
+* int result = StrToInt(string);
 * printf("Result: %d\n", result);
 * the output will be
 * Result: -123 as an integer

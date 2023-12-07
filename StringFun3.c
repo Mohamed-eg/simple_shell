@@ -45,20 +45,20 @@ char *locateChar(char *s, char c)
 
 /**
  * **SplitString2 - splits a string into words
- * @str: the input string
+ * @string: the input string
  * @d: the delimeter
  * Return: a pointer to an array of strings, or NULL on failure
  */
-char **SplitString2(char *str, char d)
+char **SplitString2(char *string, char d)
 {
 	int i, j, k, m, numwords = 0;
 	char **s;
 
-	if (str == NULL || str[0] == 0)
+	if (string == NULL || string[0] == 0)
 		return (NULL);
-	for (i = 0; str[i] != '\0'; i++)
-		if ((str[i] != d && str[i + 1] == d) ||
-		    (str[i] != d && !str[i + 1]) || str[i + 1] == d)
+	for (i = 0; string[i] != '\0'; i++)
+		if ((string[i] != d && string[i + 1] == d) ||
+		    (string[i] != d && !string[i + 1]) || string[i + 1] == d)
 			numwords++;
 	if (numwords == 0)
 		return (NULL);
@@ -67,10 +67,10 @@ char **SplitString2(char *str, char d)
 		return (NULL);
 	for (i = 0, j = 0; j < numwords; j++)
 	{
-		while (str[i] == d && str[i] != d)
+		while (string[i] == d && string[i] != d)
 			i++;
 		k = 0;
-		while (str[i + k] != d && str[i + k] && str[i + k] != d)
+		while (string[i + k] != d && string[i + k] && string[i + k] != d)
 			k++;
 		s[j] = malloc((k + 1) * sizeof(char));
 		if (!s[j])
@@ -81,7 +81,7 @@ char **SplitString2(char *str, char d)
 			return (NULL);
 		}
 		for (m = 0; m < k; m++)
-			s[j][m] = str[i++];
+			s[j][m] = string[i++];
 		s[j][m] = 0;
 	}
 	s[j] = NULL;
