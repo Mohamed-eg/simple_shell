@@ -22,7 +22,7 @@ ssize_t input_buf(infolist_t *infolist, char **buf, size_t *len)
 #if useGetLine
 		r = getline(buf, &len_p, stdin);
 #else
-		r = getLine(infolist, buf, &len_p);
+		r = getNextLine(infolist, buf, &len_p);
 #endif
 		if (r > 0)
 		{
@@ -85,8 +85,8 @@ ssize_t getInput(infolist_t *infolist)
 		return (getStringLength(p)); /* return length of current command */
 	}
 
-	*buf_p = buf; /* else not a chain, pass back buffer from getLine() */
-	return (r); /* return length of buffer from getLine() */
+	*buf_p = buf; /* else not a chain, pass back buffer from getNextLine() */
+	return (r); /* return length of buffer from getNextLine() */
 }
 
 /**
@@ -110,14 +110,14 @@ ssize_t read_buf(infolist_t *infolist, char *buf, size_t *i)
 }
 
 /**
- * getLine - gets the next line of input from STDIN
+ * getNextLine - gets the next line of input from STDIN
  * @infolist: parameter struct
  * @ptr: address of pointer to buffer, preallocated or NULL
  * @length: size of preallocated ptr buffer if not NULL
  *
  * Return: s
  */
-int getLine(infolist_t *infolist, char **ptr, size_t *length)
+int getNextLine(infolist_t *infolist, char **ptr, size_t *length)
 {
 	static char buf[readBufferSize];
 	static size_t i, len;

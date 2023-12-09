@@ -201,7 +201,7 @@ int aliasEmulator(infolist_t *);
 
 /* getline.c advans */
 ssize_t getInput(infolist_t *);
-int getLine(infolist_t *, char **, size_t *);
+int getNextLine(infolist_t *, char **, size_t *);
 void hamdelSigin(int);
 
 /* infolist.c advans */

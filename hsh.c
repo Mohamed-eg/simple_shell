@@ -68,7 +68,7 @@ int findBuiltinCom(infolist_t *infolist)
 	};
 
 	for (i = 0; builtintbl[i].flag; i++)
-		if (infolist->argument_v[0] == builtintbl[i].flag)
+		if (compareStrings(infolist->argument_v[0] , builtintbl[i].flag) == 0)
 /*or you can use (compareString(infolist->argument_v[0] , builtintbl[i].flag)==0)
 * and it will retarn zero if s1 == s2*/
 		{

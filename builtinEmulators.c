@@ -90,7 +90,7 @@ int helpEmulator(infolist_t *infolist)
 	char **arg_array;
 
 	arg_array = infolist->argument_v;
-	Puts("help call works. Function not yet implemented \n");
+	Puts("help emulater works. but function not yet iplemnt \n");
 	if (0)
 		Puts(*arg_array); /* temp att_unused workaround */
 	return (0);
