@@ -1,15 +1,15 @@
 #include "header.h"
 
 /**
- * @brief The main function for the shell-like program.
+ * main - The main function for the shell-like program.
  *
- * This function initializes an array of `infolist_t` structures, opens a file if
- * a command-line argument is provided, and then enters a shell loop.
+ * This function initializes an array of `infolist_t` structures, opens a
+ * file if a command-line argument is provided, and then enters a shell loop.
  *
- * @param argument_coun The number of command-line arguments.
- * @param argument_v The array of command-line arguments.
+ * @argument_coun: The number of command-line arguments.
+ * @argument_v: The array of command-line arguments.
  *
- * @return EXIT_SUCCESS on successful execution, EXIT_FAILURE otherwise.
+ * Return: EXIT_SUCCESS on successful execution, EXIT_FAILURE otherwise.
  *         Additionally, it may exit with status codes 126 or 127 in case of
  *         specific error conditions related to file opening.
  */
@@ -57,5 +57,5 @@ int main(int argument_coun, char **argument_v)
 * macros used here is [EXIT_FAILURE,EACCES,ENOENT,O_RDONLY]
 * O_RDONLY ->  fcntl.h
 * EXIT_FAILURE -> stdlib.h
-* EACCES,ENOENT -> errno.h 
+* EACCES,ENOENT -> errno.h
 */

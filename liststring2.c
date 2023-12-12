@@ -1,125 +1,161 @@
 #include "header.h"
 
 /**
- * listLength - determines length of linked list
- * @x: pointer to first node
+ * listLength - Calculates the length of a linked list.
  *
- * Return: size of list
+ * @x: Pointer to the firstNode of the linked list (stringlist_t).
+ *
+ * Return: The number of nodes in the linked list.
  */
 size_t listLength(const stringlist_t *x)
 {
-	size_t i = 0;/*size_t is a data type declared in <stddef.h>*/
+	size_t j = 0;/*size_t is a data type declared in <stddef.h>*/
 
 	while (x)
 	{
 		x = x->next_node;/*Moves to the next_node node in the linked list.*/
-		i++;
+		j++;
 	}
-	return (i);
+	return (j);
 	/*After the loop, the function returns the
-	final value of i, which represents the total number of nodes
+	final value of j, which represents the total number of nodes
 	in the linked list.*/
 }
 
 /**
- * listToStrings - returns an array of strings of the list->string
- * @head: pointer to first node
+ * listToStrings - Converts a linked list of strings to an array of strings.
  *
- * Return: array of strings
+ * Given the firstNode of a linked list of strings, this function creates an array
+ * of strings, each containing the content of a node in the linked list.
+ *
+ * @firstNode: Pointer to the firstNode of the linked list (stringlist_t).
+ *
+ * Return: An array of strings representing the linked list, or NULL on failure.
+ *         The caller is responsible for freeing the memory allocated for the
+ *         array and its strings.
  */
-char **listToStrings(stringlist_t *head)
+char **listToStrings(stringlist_t *firstNode)
 {
-	stringlist_t *node = head;
-	size_t i = listLength(head), j;
+	stringlist_t *currentNode = firstNode;
+	size_t x = listLength(firstNode), z;
 	char **strs;
 	char *string;
 
-	if (!head || !i)
+	/* Check for invalid input or an empty list */
+	if (!firstNode || !x)
 		return (NULL);
-	strs = malloc(sizeof(char *) * (i + 1));
+	/* Allocate memory for the array of strings */
+	strs = malloc(sizeof(char *) * (x + 1));
 	if (!strs)
 		return (NULL);
-	for (i = 0; node; node = node->next_node, i++)
+	/* Traverse the linked list and convert each currentNode's content to a string */
+	for (x = 0; currentNode; currentNode = currentNode->next_node, x++)
 	{
-		string = malloc(getStringLength(node->string) + 1);
+		/* Allocate memory for the string */
+		string = malloc(getStringLength(currentNode->string) + 1);
 		if (!string)
 		{
-			for (j = 0; j < i; j++)
-				free(strs[j]);
+			/* Free allocated memory if an error occurs */
+			for (z = 0; z < x; z++)
+				free(strs[z]);
 			free(strs);
 			return (NULL);
 		}
 
-		string = copyStrings(string, node->string);
-		strs[i] = string;
+		/* Copy the content of the currentNode to the string */
+		string = copyStrings(string, currentNode->string);
+		strs[x] = string;
 	}
-	strs[i] = NULL;
+	/* Set the last element of the array to NULL */
+	strs[x] = NULL;
+	/* Return the array of strings */
 	return (strs);
 }
 
 
 /**
- * elementList - prints all elements of a stringlist_t linked list
- * @x: pointer to first node
+ * elementList - Prints elements of a linked list.
  *
- * Return: size of list
+ * Given the head of a linked list, this function prints the elements of the
+ * list, including the numeric value and string content of each node.
+ *
+ * @x: Pointer to the head of the linked list (stringlist_t).
+ *
+ * Return: The number of elements in the linked list.
  */
 size_t elementList(const stringlist_t *x)
 {
-	size_t i = 0;
+	size_t j = 0;
 
+	/* Traverse the linked list and print each element */
 	while (x)
 	{
 		Puts(convert_number(x->number, 10, 0));
 		PutCharacter(':');
 		PutCharacter(' ');
-		Puts(x->string ? x->string : "(nil)");
+		Puts(x->string ? x->string : "(Null)");
 		Puts("\n");
 		x = x->next_node;
-		i++;
+		j++;
 	}
-	return (i);
+	/* Return the total number of elements in the linked list */
+	return (j);
 }
 
 /**
- * nodeStartWith - returns node whose string starts with prefix
- * @node: pointer to list head
- * @prefix: string to match
- * @c: the next_node character after prefix to match
+ * nodeStartWith - Finds a node with a string starting with a given prefix.
  *
- * Return: match node or null
+ * Given the head of a linked list, this function searches for a node whose
+ * string content starts with the specified prefix and optionally has a specific
+ * character at the next position.
+ *
+ * @headNode: Pointer to the head of the linked list (stringlist_t).
+ * @srchprfx: The prefix to search for.
+ * @chr: The optional character at the next position (-1 if not required).
+ *
+ * Return: Pointer to the found headNode or NULL if not found.
  */
-stringlist_t *nodeStartWith(stringlist_t *node, char *prefix, char c)
+stringlist_t *nodeStartWith(stringlist_t *headNode, char *srchprfx, char chr)
 {
-	char *p = NULL;
+	char *t = NULL;
 
-	while (node)
+	/* Traverse the linked list and search for a matching headNode */
+	while (headNode)
 	{
-		p = startsWith(node->string, prefix);
-		if (p && ((c == -1) || (*p == c)))
-			return (node);
-		node = node->next_node;
+		t = startsWith(headNode->string, srchprfx);
+		if (t && ((chr == -1) || (*t == chr)))
+			return (headNode);
+		/* Move to the next node in the linked list */
+		headNode = headNode->next_node;
 	}
+	/* Return NULL if no matching node is found */
 	return (NULL);
 }
 
 /**
- * nodeIndex - gets the index of a node
- * @head: pointer to list head
- * @node: pointer to the node
+ * nodeIndex - Finds the index of a node in a linked list.
  *
- * Return: index of node or -1
+ * Given the head of a linked list and a specific node, this function finds
+ * the index of the node in the linked list. If the node is not found, it
+ * returns -1.
+ *
+ * @firstNode: Pointer to the head of the linked list (stringlist_t).
+ * @currentNode: The specific node whose index is to be found.
+ *
+ * Return: The index of the node if found; otherwise, -1.
  */
-ssize_t nodeIndex(stringlist_t *head, stringlist_t *node)
+ssize_t nodeIndex(stringlist_t *firstNode, stringlist_t *currentNode)
 {
-	size_t i = 0;
+	size_t x = 0;
 
-	while (head)
+	/* Traverse the linked list to find the index of the specified node */
+	while (firstNode)
 	{
-		if (head == node)
-			return (i);
-		head = head->next_node;
-		i++;
+		if (firstNode == currentNode)
+			return (x);
+		firstNode = firstNode->next_node;
+		x++;
 	}
+	/* Return -1 if the specified node is not found in the linked list */
 	return (-1);
 }

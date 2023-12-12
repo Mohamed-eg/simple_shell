@@ -2,17 +2,17 @@
 
 /**
  * ADDnode - adds a node to the start of the list
- * @head: address of pointer to head node
+ * @firstNode: address of pointer to firstNode node
  * @string: string field of node
  * @number: node index used by history
  *
  * Return: size of list
  */
-stringlist_t *ADDnode(stringlist_t **head, const char *string, int number)
+stringlist_t *ADDnode(stringlist_t **firstNode, const char *string, int number)
 {
 	stringlist_t *new_head;
 
-	if (!head)
+	if (!firstNode)
 		return (NULL);
 	new_head = malloc(sizeof(stringlist_t));
 	if (!new_head)
@@ -28,27 +28,27 @@ stringlist_t *ADDnode(stringlist_t **head, const char *string, int number)
 			return (NULL);
 		}
 	}
-	new_head->next_node = *head;
-	*head = new_head;
+	new_head->next_node = *firstNode;
+	*firstNode = new_head;
 	return (new_head);
 }
 
 /**
  * ADDnodeEn - adds a node to the end of the list
- * @head: address of pointer to head node
+ * @firstNode: address of pointer to firstNode node
  * @string: string field of node
  * @number: node index used by history
  *
  * Return: size of list
  */
-stringlist_t *ADDnodeEn(stringlist_t **head, const char *string, int number)
+stringlist_t *ADDnodeEn(stringlist_t **firstNode, const char *string, int number)
 {
 	stringlist_t *new_node, *node;
 
-	if (!head)
+	if (!firstNode)
 		return (NULL);
 
-	node = *head;
+	node = *firstNode;
 	new_node = malloc(sizeof(stringlist_t));
 	if (!new_node)
 		return (NULL);
@@ -70,7 +70,7 @@ stringlist_t *ADDnodeEn(stringlist_t **head, const char *string, int number)
 		node->next_node = new_node;
 	}
 	else
-		*head = new_node;
+		*firstNode = new_node;
 	return (new_node);
 }
 
@@ -96,28 +96,28 @@ size_t printListString(const stringlist_t *h)
 
 /**
  * deletNode - deletes node at given index
- * @head: address of pointer to first node
+ * @firstNode: address of pointer to first node
  * @index: index of node to delete
  *
  * Return: 1 on success, 0 on failure
  */
-int deletNode(stringlist_t **head, unsigned int index)
+int deletNode(stringlist_t **firstNode, unsigned int index)
 {
 	stringlist_t *node, *prev_node;
 	unsigned int i = 0;
 
-	if (!head || !*head)
+	if (!firstNode || !*firstNode)
 		return (0);
 
 	if (!index)
 	{
-		node = *head;
-		*head = (*head)->next_node;
+		node = *firstNode;
+		*firstNode = (*firstNode)->next_node;
 		free(node->string);
 		free(node);
 		return (1);
 	}
-	node = *head;
+	node = *firstNode;
 	while (node)
 	{
 		if (i == index)
@@ -136,18 +136,18 @@ int deletNode(stringlist_t **head, unsigned int index)
 
 /**
  * freeList - frees all nodes of a list
- * @head_ptr: address of pointer to head node
+ * @head_ptr: address of pointer to firstNode node
  *
  * Return: void
  */
 void freeList(stringlist_t **head_ptr)
 {
-	stringlist_t *node, *next_node, *head;
+	stringlist_t *node, *next_node, *firstNode;
 
 	if (!head_ptr || !*head_ptr)
 		return;
-	head = *head_ptr;
-	node = head;
+	firstNode = *head_ptr;
+	node = firstNode;
 	while (node)
 	{
 		next_node = node->next_node;
