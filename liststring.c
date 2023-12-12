@@ -1,159 +1,204 @@
 #include "header.h"
 
 /**
- * ADDnode - adds a node to the start of the list
- * @firstNode: address of pointer to firstNode node
- * @string: string field of node
- * @number: node index used by history
+ * ADDnode - Adds a new node to the beginning of a linked list.
  *
- * Return: size of list
+ * This function creates a new node with the specified numeric value and, if
+ * provided, a duplicated string. The new node is added to the beginning of
+ * the linked list.
+ *
+ * @firstNode: Pointer to the pointer to the head of the linked list.
+ * @string: The string content for the new node (NULL if not provided).
+ * @number: The numeric value for the new node.
+ *
+ * Return: Pointer to the newly added node, or NULL on failure.
  */
 stringlist_t *ADDnode(stringlist_t **firstNode, const char *string, int number)
 {
-	stringlist_t *new_head;
+	stringlist_t *newHead;
 
+	/* Check for a valid pointer to the pointer to the head of the linked list */
 	if (!firstNode)
 		return (NULL);
-	new_head = malloc(sizeof(stringlist_t));
-	if (!new_head)
+	/* Allocate memory for the new node */
+	newHead = malloc(sizeof(stringlist_t));
+	if (!newHead)
 		return (NULL);
-	fillMemoryWith((void *)new_head, 0, sizeof(stringlist_t));
-	new_head->number = number;
+	/* Initialize the new node's memory to zero */
+	fillMemoryWith((void *)newHead, 0, sizeof(stringlist_t));
+	/* Set the numeric value for the new node */
+	newHead->number = number;
+	/* Duplicate the string content if provided */
 	if (string)
 	{
-		new_head->string = duplcatString(string);
-		if (!new_head->string)
+		newHead->string = duplcatString(string);
+		if (!newHead->string)
 		{
-			free(new_head);
+			/* Free allocated memory if an error occurs */
+			free(newHead);
 			return (NULL);
 		}
 	}
-	new_head->next_node = *firstNode;
-	*firstNode = new_head;
-	return (new_head);
+	/* Add the new node to the beginning of the linked list */
+	newHead->next_node = *firstNode;
+	*firstNode = newHead;
+	/* Return a pointer to the newly added node */
+	return (newHead);
 }
 
 /**
- * ADDnodeEn - adds a node to the end of the list
- * @firstNode: address of pointer to firstNode node
- * @string: string field of node
- * @number: node index used by history
+ * ADDnodeEn - Adds a new node to the end of a linked list.
  *
- * Return: size of list
+ * This function creates a new node with the specified numeric value and, if
+ * provided, a duplicated string. The new node is added to the end of the linked list.
+ *
+ * @firstNode: Pointer to the pointer to the head of the linked list.
+ * @string: The string content for the new node (NULL if not provided).
+ * @number: The numeric value for the new node.
+ *
+ * Return: Pointer to the newly added node, or NULL on failure.
  */
 stringlist_t *ADDnodeEn(stringlist_t **firstNode, const char *string, int number)
 {
-	stringlist_t *new_node, *node;
+	stringlist_t *newNode, *currentNode;
 
+	 /* Check for a valid pointer to the pointer to the head of the linked list */
 	if (!firstNode)
 		return (NULL);
 
-	node = *firstNode;
-	new_node = malloc(sizeof(stringlist_t));
-	if (!new_node)
+	/* Initialize the current node to the head of the linked list */
+	currentNode = *firstNode;
+	/* Allocate memory for the new node */
+	newNode = malloc(sizeof(stringlist_t));
+	if (!newNode)
 		return (NULL);
-	fillMemoryWith((void *)new_node, 0, sizeof(stringlist_t));
-	new_node->number = number;
+	/* Initialize the new node's memory to zero */
+	fillMemoryWith((void *)newNode, 0, sizeof(stringlist_t));
+	/* Set the numeric value for the new node */
+	newNode->number = number;
+	/* Duplicate the string content if provided */
 	if (string)
 	{
-		new_node->string = duplcatString(string);
-		if (!new_node->string)
+		newNode->string = duplcatString(string);
+		if (!newNode->string)
 		{
-			free(new_node);
+			/* Free allocated memory if an error occurs */
+			free(newNode);
 			return (NULL);
 		}
 	}
-	if (node)
+	/* Add the new node to the end of the linked list */
+	if (currentNode)
 	{
-		while (node->next_node)
-			node = node->next_node;
-		node->next_node = new_node;
+		while (currentNode->next_node)
+			currentNode = currentNode->next_node;
+		currentNode->next_node = newNode;
 	}
-	else
-		*firstNode = new_node;
-	return (new_node);
+	else/* If the list is empty, set the new node as the head of the list */
+		*firstNode = newNode;
+	/* Return a pointer to the newly added node */
+	return (newNode);
 }
 
 /**
- * printListString - prints only the string element of a stringlist_t linked list
- * @h: pointer to first node
+ * printListString - Prints the string content of each node in a linked list.
  *
- * Return: size of list
+ * Given the head of a linked list, this function prints the string content of
+ * each node. If a node's string is NULL, it prints "(Null)" for that node.
+ *
+ * @head: Pointer to the head of the linked list (stringlist_t).
+ *
+ * Return: The number of nodes in the linked list.
  */
-size_t printListString(const stringlist_t *h)
+size_t printListString(const stringlist_t *head)
 {
-	size_t i = 0;
+	size_t x = 0;
 
-	while (h)
+	 /* Traverse the linked list and print the string content of each node */
+	while (head)
 	{
-		Puts(h->string ? h->string : "(nil)");
+		Puts(head->string ? head->string : "(Null)");
 		Puts("\n");
-		h = h->next_node;
-		i++;
+		head = head->next_node;
+		x++;
 	}
-	return (i);
+	/* Return the total number of nodes in the linked list */
+	return (x);
 }
 
 /**
- * deletNode - deletes node at given index
- * @firstNode: address of pointer to first node
- * @index: index of node to delete
+ * deletNode - Deletes a node at a specified index in a linked list.
  *
- * Return: 1 on success, 0 on failure
+ * This function deletes the node at the specified index in the linked list.
+ * If the index is 0, it deletes the first node. Returns 1 on success,
+ * 0 if the index is out of bounds or if the list is empty.
+ *
+ * @firstNode: Pointer to the pointer to the head of the linked list.
+ * @nodeindex: The index of the node to be deleted.
+ *
+ * Return: 1 on success, 0 on failure.
  */
-int deletNode(stringlist_t **firstNode, unsigned int index)
+int deletNode(stringlist_t **firstNode, unsigned int nodeindex)
 {
-	stringlist_t *node, *prev_node;
-	unsigned int i = 0;
+	stringlist_t *currentNode, *previousNode;
+	unsigned int x = 0;
 
+	/* Check for a valid pointer to the pointer to the head of the linked list */
 	if (!firstNode || !*firstNode)
 		return (0);
 
-	if (!index)
+	 /* If nodeindex is 0, delete the first node */
+	if (!nodeindex)
 	{
-		node = *firstNode;
+		currentNode = *firstNode;
 		*firstNode = (*firstNode)->next_node;
-		free(node->string);
-		free(node);
+		free(currentNode->string);
+		free(currentNode);
 		return (1);
 	}
-	node = *firstNode;
-	while (node)
+	/* Traverse the linked list to find the node at the specified index */
+	currentNode = *firstNode;
+	while (currentNode)
 	{
-		if (i == index)
+		if (x == nodeindex)
 		{
-			prev_node->next_node = node->next_node;
-			free(node->string);
-			free(node);
+			previousNode->next_node = currentNode->next_node;
+			free(currentNode->string);
+			free(currentNode);
 			return (1);
 		}
-		i++;
-		prev_node = node;
-		node = node->next_node;
+		x++;
+		previousNode = currentNode;
+		currentNode = currentNode->next_node;
 	}
+	/* Return 0 if the index is out of bounds or the list is empty */
 	return (0);
 }
 
 /**
  * freeList - frees all nodes of a list
- * @head_ptr: address of pointer to firstNode node
+ * @headPointr: address of pointer to firstNode currentNode
  *
  * Return: void
  */
-void freeList(stringlist_t **head_ptr)
+void freeList(stringlist_t **headPointr)
 {
-	stringlist_t *node, *next_node, *firstNode;
+	stringlist_t *currentNode, *nextNode, *firstNode;
 
-	if (!head_ptr || !*head_ptr)
+	/* Check for a valid pointer to the pointer to the head of the linked list */
+	if (!headPointr || !*headPointr)
 		return;
-	firstNode = *head_ptr;
-	node = firstNode;
-	while (node)
+	/* Store the original head pointer for reference */
+	firstNode = *headPointr;
+	currentNode = firstNode;
+	/* Iterate through each node in the linked list and free memory */
+	while (currentNode)
 	{
-		next_node = node->next_node;
-		free(node->string);
-		free(node);
-		node = next_node;
+		nextNode = currentNode->next_node;
+		free(currentNode->string);
+		free(currentNode);
+		currentNode = nextNode;
 	}
-	*head_ptr = NULL;
+	/* Set the head pointer to NULL after freeing all nodes */
+	*headPointr = NULL;
 }
