@@ -37,7 +37,7 @@ int main(int argument_coun, char **argument_v)
 			{
 				/*Print error message for non-existent file*/
 				errPrintStr(argument_v[0]);
-				errPrintStr(": 0: Can't open ");
+				errPrintStr(": 0: Can't open that file ");
 				errPrintStr(argument_v[1]);
 				errPrintChar('\n');
 				errPrintChar(bufferFlush);/*-1*/
