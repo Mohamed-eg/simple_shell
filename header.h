@@ -12,7 +12,7 @@
 * https://www.ibm.com/docs/en/zos/2.1.0?topic=files-systypesh
 */
 #include <sys/wait.h>
-#include <sys/stat.h>
+#include <sys/stat.h>/*for stat() or struct stat*/
 #include <limits.h>
 /*This header file contains various constants that represent
 * the limits of various properties of the implementation,

@@ -1,86 +1,111 @@
 #include "header.h"
 
 /**
- * isCMD - determines if a file is an executable command
- * @infolist: the infolist struct
- * @str_path: str_path to the file
+ * isCMD - Checks if the specified path corresponds to a regular file.
+ * @infolist: Unused parameter.
+ * @str_path: The path to check.
  *
- * Return: 1 if true, 0 otherwise
+ * Return:
+ * - 1 if the path corresponds to a regular file.
+ * - 0 otherwise or if str_path is NULL.
  */
 int isCMD(infolist_t *infolist, char *str_path)
 {
-	struct stat st;
+	struct stat fileStat;
 
+	/*Unused parameter*/
 	(void)infolist;
-	if (!str_path || stat(str_path, &st))
+	/* Check if str_path is NULL or if stat fails*/
+	if (!str_path || stat(str_path, &fileStat))
 		return (0);
 
-	if (st.st_mode & S_IFREG)
+	/*Check if the path corresponds to a regular file*/
+	if (fileStat.st_mode & S_IFREG)/*S_IFREG: Regular file*/
 	{
+		/*file is a regular file.*/
 		return (1);
 	}
+	/*file is not a regular file.*/
 	return (0);
 }
 
 /**
- * duplCharacters - duplicates characters
- * @patheString: the PATH string
- * @start: starting index
- * @stop: stopping index
+ * duplCharacters - Extracts a substring from patheString.
+ * @patheString: The input string.
+ * @startIndex: The starting index of the substring.
+ * @stopIndex: The stopping index (exclusive) of the substring.
  *
- * Return: pointer to new buffer
+ * Return: A pointer to the extracted substring. The substring is stored in a
+ * static buffer, so it is not safe for concurrent use.
  */
-char *duplCharacters(char *patheString, int start, int stop)
+char *duplCharacters(char *patheString, int startIndex, int stopIndex)
 {
-	static char buf[1024];
-	int i = 0, x = 0;
+	static char staBuff[1024];
+	int y = 0, x = 0;
 
-	for (x = 0, i = start; i < stop; i++)
-		if (patheString[i] != ':')
-			buf[x++] = patheString[i];
-	buf[x] = 0;
-	return (buf);
+	/*Iterate from start to stop (exclusive)*/
+	for (x = 0, y = startIndex; y < stopIndex; y++)
+		/*Exclude ':' characters*/
+		if (patheString[y] != ':')
+			staBuff[x++] = patheString[y];
+	/*Null-terminate the extracted substring*/
+	staBuff[x] = 0;
+	/*Return a pointer to the extracted substring*/
+	return (staBuff);
 }
 
 /**
- * findPath - finds this CMD in the PATH string
- * @infolist: the infolist struct
- * @patheString: the PATH string
- * @CMD: the CMD to find
+ * findPath - Searches for a command in a colon-separated list of directories.
+ * @infolist: Unused parameter.
+ * @patheString: The colon-separated list of directories.
+ * @CMD: The command to search for.
  *
- * Return: full str_path of CMD if found or NULL
+ * Return: A pointer to the full path of the command if found, or NULL otherwise.
  */
 char *findPath(infolist_t *infolist, char *patheString, char *CMD)
 {
-	int i = 0, currentPos = 0;
+	int x = 0, currentPos = 0;
 	char *str_path;
 
+	/* Check if patheString is NULL*/
 	if (!patheString)
 		return (NULL);
+
+	/*Check if CMD starts with "./" and is a valid command*/
 	if ((getStringLength(CMD) > 2) && startsWith(CMD, "./"))
 	{
 		if (isCMD(infolist, CMD))
 			return (CMD);
 	}
+
+	/*Loop through the patheString*/
 	while (1)
 	{
-		if (!patheString[i] || patheString[i] == ':')
+		/*Check for end of string or colon separator*/
+		if (!patheString[x] || patheString[x] == ':')
 		{
-			str_path = duplCharacters(patheString, currentPos, i);
+			/*Extract the directory path from patheString*/
+			str_path = duplCharacters(patheString, currentPos, x);
+			/*If str_path is empty, concatenate CMD directly*/
 			if (!*str_path)
 				concatenetStrings(str_path, CMD);
 			else
 			{
+				/*Concatenate str_path, "/", and CMD*/
 				concatenetStrings(str_path, "/");
 				concatenetStrings(str_path, CMD);
 			}
+			/*Check if the concatenated path is a valid command*/
 			if (isCMD(infolist, str_path))
 				return (str_path);
-			if (!patheString[i])
+			/*Break if end of string is reached*/
+			if (!patheString[x])
 				break;
-			currentPos = i;
+			/*Update currentPos for the next directory*/
+			currentPos = x;
 		}
-		i++;
+		/*Move to the next character*/
+		x++;
 	}
-	return (NULL);
+	return (NULL);/*Return NULL if the command is not found in any directory*/
 }

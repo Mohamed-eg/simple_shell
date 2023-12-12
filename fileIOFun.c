@@ -68,7 +68,7 @@ int r_history(infolist_t *infolist)
 {
 	int i, last = 0, linecount = 0;
 	ssize_t fileDes, rdlen, fsize = 0;
-	struct stat st;
+	struct stat fileStat;
 	char *buffer = NULL, *filename = getFileHistory(infolist);
 
 	if (!filename)
@@ -78,8 +78,8 @@ int r_history(infolist_t *infolist)
 	free(filename);
 	if (fileDes == -1)
 		return (0);
-	if (!fstat(fileDes, &st))
-		fsize = st.st_size;
+	if (!fstat(fileDes, &fileStat))
+		fsize = fileStat.st_size;
 	if (fsize < 2)
 		return (0);
 	buffer = malloc(sizeof(char) * (fsize + 1));
