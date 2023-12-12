@@ -1,11 +1,16 @@
 #include "header.h"
 
 /**
- * clearInformation - initializes infolist_t struct
- * @infolist: struct address
+ * clearInformation - Initializes an infolist_t structure.
+ *
+ * This function takes the address of an infolist_t structure and sets its
+ * members to default values (NULL and 0) to ensure a clean initialization.
+ *
+ * @infolist: Pointer to the infolist_t structure to be initialized.
  */
 void clearInformation(infolist_t *infolist)
 {
+	/* Set members to default values (NULL and 0) */
 	infolist->argument = NULL;
 	infolist->argument_v = NULL;
 	infolist->str_path = NULL;
@@ -13,21 +18,29 @@ void clearInformation(infolist_t *infolist)
 }
 
 /**
- * setInformation - initializes infolist_t struct
- * @infolist: struct address
- * @av: argument vector
+ * setInformation - Sets information in an infolist_t structure.
+ *
+ * This function takes an infolist_t structure and a command-line argument
+ * vector. It sets the filename, argument, argument_v, and argument_c members
+ * of the infolist_t structure based on the provided arguments.
+ *
+ * @infolist: Pointer to the infolist_t structure to be updated.
+ * @arg_vec: Command-line argument vector.
  */
-void setInformation(infolist_t *infolist, char **av)
+void setInformation(infolist_t *infolist, char **arg_vec)
 {
-	int i = 0;
+	int x = 0;
 
-	infolist->fname = av[0];
+	/* Set the filename member to the first element of arg_vec */
+	infolist->filename = arg_vec[0];
+	/* Check if argument is not NULL and process it */
 	if (infolist->argument)
 	{
+		/* Split the argument into tokens and set argument_v */
 		infolist->argument_v = SplitString(infolist->argument, " \t");
+		/* If SplitString fails, set a default argument_v with one element */
 		if (!infolist->argument_v)
 		{
-
 			infolist->argument_v = malloc(sizeof(char *) * 2);
 			if (infolist->argument_v)
 			{
@@ -35,10 +48,12 @@ void setInformation(infolist_t *infolist, char **av)
 				infolist->argument_v[1] = NULL;
 			}
 		}
-		for (i = 0; infolist->argument_v && infolist->argument_v[i]; i++)
+		/* Count the number of elements in argument_v and set argument_c */
+		for (x = 0; infolist->argument_v && infolist->argument_v[x]; x++)
 			;
-		infolist->argument_c = i;
+		infolist->argument_c = x;
 
+		/* Perform additional processing on the infolist */
 		replaceAlies(infolist);
 		replaVars(infolist);
 	}
@@ -47,16 +62,16 @@ void setInformation(infolist_t *infolist, char **av)
 /**
  * freeInformation - frees infolist_t struct fields
  * @infolist: struct address
- * @all: true if freeing all fields
+ * @alllist: true if freeing alllist fields
  */
-void freeInformation(infolist_t *infolist, int all)
+void freeInformation(infolist_t *infolist, int alllist)
 {
 	freeFun(infolist->argument_v);
 	infolist->argument_v = NULL;
 	infolist->str_path = NULL;
-	if (all)
+	if (alllist)
 	{
-		if (!infolist->cmd_buf)
+		if (!infolist->cmdBuffer)
 			free(infolist->argument);
 		if (infolist->env)
 			freeList(&(infolist->env));
@@ -66,9 +81,9 @@ void freeInformation(infolist_t *infolist, int all)
 			freeList(&(infolist->alias));
 		freeFun(infolist->environ);
 			infolist->environ = NULL;
-		freePointers((void **)infolist->cmd_buf);
-		if (infolist->readfd > 2)
-			close(infolist->readfd);
+		freePointers((void **)infolist->cmdBuffer);
+		if (infolist->rfd > 2)
+			close(infolist->rfd);
 		PutCharacter(bufferFlush);
 	}
 }

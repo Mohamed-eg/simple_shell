@@ -45,7 +45,7 @@ int main(int argument_coun, char **argument_v)
 			}
 			return (EXIT_FAILURE);/*Used by the atexit() function. from stdlib.h*/
 		}
-		infolist->readfd = fileDes;
+		infolist->rfd = fileDes;
 	}
 	/*Populate environment list, read history, and enter the shell loop*/
 	populateEnvList(infolist);

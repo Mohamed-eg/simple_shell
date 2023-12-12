@@ -37,7 +37,7 @@ int StringToInteger(char *s)
  */
 void PrintError(infolist_t *infolist, char *estr)
 {
-	errPrintStr(infolist->fname);
+	errPrintStr(infolist->filename);
 	errPrintStr(": ");
 	printDescriptor(infolist->err_line_num, STDERR_FILENO);
 	errPrintStr(": ");

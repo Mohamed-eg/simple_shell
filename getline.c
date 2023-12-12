@@ -15,7 +15,7 @@ ssize_t input_buf(infolist_t *infolist, char **buf, size_t *len)
 
 	if (!*len) /* if nothing left in the buffer, fill it */
 	{
-		/*freePointers((void **)infolist->cmd_buf);*/
+		/*freePointers((void **)infolist->cmdBuffer);*/
 		free(*buf);
 		*buf = NULL;
 		signal(SIGINT, hamdelSigin);
@@ -31,13 +31,13 @@ ssize_t input_buf(infolist_t *infolist, char **buf, size_t *len)
 				(*buf)[r - 1] = '\0'; /* remove trailing newline */
 				r--;
 			}
-			infolist->linecount_flag = 1;
+			infolist->linenumflag = 1;
 			remove_comments(*buf);
-			buildHistoryList(infolist, *buf, infolist->histcount++);
+			buildHistoryList(infolist, *buf, infolist->histnum++);
 			/* if (locateChar(*buf, ';')) is this a command chain? */
 			{
 				*len = r;
-				infolist->cmd_buf = buf;
+				infolist->cmdBuffer = buf;
 			}
 		}
 	}
@@ -78,7 +78,7 @@ ssize_t getInput(infolist_t *infolist)
 		if (i >= len) /* reached end of buffer? */
 		{
 			i = len = 0; /* reset position and length */
-			infolist->cmd_buf_type = cmdNormal;
+			infolist->cmdBufferTybe = cmdNormal;
 		}
 
 		*buf_p = p; /* pass back pointer to current command position */
@@ -103,7 +103,7 @@ ssize_t read_buf(infolist_t *infolist, char *buf, size_t *i)
 
 	if (*i)
 		return (0);
-	r = read(infolist->readfd, buf, readBufferSize);
+	r = read(infolist->rfd, buf, readBufferSize);
 	if (r >= 0)
 		*i = r;
 	return (r);

@@ -62,7 +62,7 @@ int w_history(infolist_t *infolist)
  * r_history - reads history from file
  * @infolist: the parameter struct
  *
- * Return: histcount on success, 0 otherwise
+ * Return: histnum on success, 0 otherwise
  */
 int r_history(infolist_t *infolist)
 {
@@ -100,18 +100,18 @@ int r_history(infolist_t *infolist)
 	if (last != i)
 		buildHistoryList(infolist, buffer + last, linecount++);
 	free(buffer);
-	infolist->histcount = linecount;
-	while (infolist->histcount-- >= maxHistory)
+	infolist->histnum = linecount;
+	while (infolist->histnum-- >= maxHistory)
 		deletNode(&(infolist->history), 0);
 	renumberHistory(infolist);
-	return (infolist->histcount);
+	return (infolist->histnum);
 }
 
 /**
  * buildHistoryList - adds entry to a history linked list
  * @infolist: Structure containing potential arguments. Used to maintain
  * @buffer: buffer
- * @linecount: the history linecount, histcount
+ * @linecount: the history linecount, histnum
  *
  * Return: Always 0
  */
@@ -132,7 +132,7 @@ int buildHistoryList(infolist_t *infolist, char *buffer, int linecount)
  * renumberHistory - renumbers the history linked list after changes
  * @infolist: Structure containing potential arguments. Used to maintain
  *
- * Return: the new histcount
+ * Return: the new histnum
  */
 int renumberHistory(infolist_t *infolist)
 {
@@ -144,5 +144,5 @@ int renumberHistory(infolist_t *infolist)
 		node->number = i++;
 		node = node->next_node;
 	}
-	return (infolist->histcount = i);
+	return (infolist->histnum = i);
 }

@@ -91,10 +91,10 @@ void cheackPasses(infolist_t *infolist)
 	int i, k;
 
 	infolist->str_path = infolist->argument_v[0];
-	if (infolist->linecount_flag == 1)
+	if (infolist->linenumflag == 1)
 	{
 		infolist->err_line_num++;
-		infolist->linecount_flag = 0;
+		infolist->linenumflag = 0;
 	}
 	for (i = 0, k = 0; infolist->argument[i]; i++)
 		if (!IsDelimeter(infolist->argument[i], " \t\n"))

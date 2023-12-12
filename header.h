@@ -77,18 +77,18 @@ typedef struct stringList
  *@argument_c: the argument count
  *@err_line_num: the error count
  *@err_code: the error code it can be 2 & it is always a number
- *@linecount_flag: if on count this line of input
- *@fname: the program filename
+ *@linenumflag: if on count this line of input
+ *@filename: the program filename
  *@env: linked list local copy of environ
  *@environ: custom modified copy of environ from LL env
  *@history: the history node
  *@alias: the alias node
- *@env_changed: on if environ was changed
+ *@isenvchange: on if environ was changed
  *@status: the return status of the last exec'd command
- *@cmd_buf: address of pointer to cmd_buf, on if chaining
- *@cmd_buf_type: CMD_type ||, &&, ;
- *@readfd: the fileDes from which to read line input
- *@histcount: the history line number count
+ *@cmdBuffer: address of pointer to cmdBuffer, on if chaining
+ *@cmdBufferTybe: CMD_type ||, &&, ;
+ *@rfd: the fileDes from which to read line input
+ *@histnum: the history line number count
  */
 typedef struct PassedInformation
 {
@@ -98,19 +98,19 @@ typedef struct PassedInformation
 	int argument_c;/*argument Count*/
 	unsigned int err_line_num;
 	int err_code;
-	int linecount_flag;
-	char *fname;
+	int linenumflag;
+	char *filename;
 	stringlist_t *env;
 	stringlist_t *history;
 	stringlist_t *alias;
 	char **environ;
-	int env_changed;
+	int isenvchange;
 	int status;
 
-	char **cmd_buf; /* pointer to CMD ; chain buffer, for memory mangement */
-	int cmd_buf_type; /* CMD_type ||, &&, ; */
-	int readfd;
-	int histcount;
+	char **cmdBuffer; /* pointer to CMD ; chain buffer, for memory mangement */
+	int cmdBufferTybe; /* CMD_type ||, &&, ; */
+	int rfd;
+	int histnum;
 } infolist_t;
 
 #define initialInformatio \

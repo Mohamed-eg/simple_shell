@@ -8,7 +8,7 @@
  */
 int IsInteractive(infolist_t *infolist)
 {
-	return (isatty(STDIN_FILENO) && infolist->readfd <= 2);
+	return (isatty(STDIN_FILENO) && infolist->rfd <= 2);
 }
 
 /**

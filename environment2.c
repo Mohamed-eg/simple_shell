@@ -8,10 +8,10 @@
  */
 char **our_environ(infolist_t *infolist)
 {
-	if (!infolist->environ || infolist->env_changed)
+	if (!infolist->environ || infolist->isenvchange)
 	{
 		infolist->environ = listToStrings(infolist->env);
-		infolist->env_changed = 0;
+		infolist->isenvchange = 0;
 	}
 
 	return (infolist->environ);
@@ -38,7 +38,7 @@ int remov_environ(infolist_t *infolist, char *var)
 		p = startsWith(node->string, var);
 		if (p && *p == '=')
 		{
-			infolist->env_changed = deletNode(&(infolist->env), i);
+			infolist->isenvchange = deletNode(&(infolist->env), i);
 			i = 0;
 			node = infolist->env;
 			continue;
@@ -46,7 +46,7 @@ int remov_environ(infolist_t *infolist, char *var)
 		node = node->next_node;
 		i++;
 	}
-	return (infolist->env_changed);
+	return (infolist->isenvchange);
 }
 
 /**
@@ -81,13 +81,13 @@ int init_env_var(infolist_t *infolist, char *var, char *value)
 		{
 			free(node->string);
 			node->string = buf;
-			infolist->env_changed = 1;
+			infolist->isenvchange = 1;
 			return (0);
 		}
 		node = node->next_node;
 	}
 	ADDnodeEn(&(infolist->env), buf, 0);
 	free(buf);
-	infolist->env_changed = 1;
+	infolist->isenvchange = 1;
 	return (0);
 }
