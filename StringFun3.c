@@ -1,89 +1,115 @@
 #include "header.h"
 
 /**
- **concatenatesStrings - concatenates two strings
- *@dest: the first string
- *@src: the second string
- *@n: the amount of bytes to be maximally used
- *Return: the concatenated string
+ * concatenatesStrings - Concatenates two strings up to a specified number of bytes.
+ * @str_one: The destination string to which the other string is concatenated.
+ * @str_two: The source string to be concatenated.
+ * @byt_num: The maximum number of bytes to concatenate from str_two.
+ *
+ * Return: A pointer to the concatenated string (str_one). If str_one is NULL or
+ *         memory allocation fails, returns NULL.
+ *
+ * Note: The caller is responsible for freeing any allocated memory.
  */
-char *concatenatesStrings(char *dest, char *src, int n)
+char *concatenatesStrings(char *str_one, char *str_two, int byt_num)
 {
-	int i, j;
-	char *s = dest;
+	int x, y;
+	char *x = str_one;
+	/* Check for NULL pointers*/
+	if (str_one == NULL && str_two == NULL)
+		return (NULL);
 
-	i = 0;
-	j = 0;
-	while (dest[i] != '\0')
-		i++;
-	while (src[j] != '\0' && j < n)
+	x = 0;
+	y = 0;
+	/*Find the end of str_one*/
+	while (str_one[x] != '\0')
+		x++;
+	/*Concatenate str_two to str_one, up to byt_num bytes*/
+	while (str_two[y] != '\0' && y < byt_num)
 	{
-		dest[i] = src[j];
-		i++;
-		j++;
+		str_one[x] = str_two[y];
+		x++;
+		y++;
 	}
-	if (j < n)
-		dest[i] = '\0';
-	return (s);
+	/*Null-terminate the concatenated string*/
+	if (y < byt_num)
+		str_one[x] = '\0';
+	/*Return the pointer to the concatenated string*/
+	return (x);
 }
 
 /**
  **locateChar - locates a character in a string
- *@s: the string to be parsed
- *@c: the character to look for
- *Return: (s) a pointer to the memory area s
+ *@x: string that we look in
+ *@t: character we are looking for [target]
+ *Return: x a pointer to the character
  */
-char *locateChar(char *s, char c)
+char *locateChar(char *x, char t)
 {
+	/*loop in x to find the tardet t and retarn a pointer to it in x*/
 	do {
-		if (*s == c)
-			return (s);
-	} while (*s++ != '\0');
-
+		if (*x == t)
+			return (x);
+	} while (*x++ != '\0');
+	/*if you don't find any thing return null*/
 	return (NULL);
 }
 
 /**
- * **SplitString2 - splits a string into words
- * @string: the input string
- * @d: the delimeter
- * Return: a pointer to an array of strings, or NULL on failure
+ * SplitString2 - Splits a string into an array of substrings based on a delimiter.
+ * @string: The input string to be split.
+ * @delimiter: The delimiter character used to separate substrings.
+ *
+ * Return: A dynamically allocated array of strings (char **), with the last
+ *         element set to NULL. Returns NULL if the input string is empty or if
+ *         memory allocation fails.
+ *
+ * Note: The caller is responsible for freeing the allocated memory using free().
  */
-char **SplitString2(char *string, char d)
+char **SplitString2(char *string, char delimiter)
 {
-	int i, j, k, m, numwords = 0;
+	int x, y, z, l, n = 0;
 	char **s;
-
+	/*Check for empty string*/
 	if (string == NULL || string[0] == 0)
 		return (NULL);
-	for (i = 0; string[i] != '\0'; i++)
-		if ((string[i] != d && string[i + 1] == d) ||
-		    (string[i] != d && !string[i + 1]) || string[i + 1] == d)
-			numwords++;
-	if (numwords == 0)
+	/*Count the number of substrings*/
+	for (x = 0; string[x] != '\0'; x++)
+		if ((string[x] != delimiter && string[x + 1] == delimiter) ||
+		    (string[x] != delimiter && !string[x + 1]) || string[x + 1] == delimiter)
+			n++;
+	/*Return NULL if no substrings found*/
+	if (n == 0)
 		return (NULL);
-	s = malloc((1 + numwords) * sizeof(char *));
+	/*Allocate memory for the array of strings*/
+	s = malloc((1 + n) * sizeof(char *));
 	if (!s)
 		return (NULL);
-	for (i = 0, j = 0; j < numwords; j++)
+	for (x = 0, y = 0; y < n; y++)
 	{
-		while (string[i] == d && string[i] != d)
-			i++;
-		k = 0;
-		while (string[i + k] != d && string[i + k] && string[i + k] != d)
-			k++;
-		s[j] = malloc((k + 1) * sizeof(char));
-		if (!s[j])
+	/* Skip leading delimiters*/
+		while (string[x] == delimiter && string[x] != delimiter)
+			x++;
+		z = 0;
+		/*Count characters until the next delimiter or end of string*/
+		while (string[x + z] != delimiter && string[x + z] && string[x + z] != delimiter)
+			z++;
+		s[y] = malloc((z + 1) * sizeof(char));
+		if (!s[y])
 		{
-			for (k = 0; k < j; k++)
-				free(s[k]);
+		/*Free allocated memory on failure*/
+			for (z = 0; z < y; z++)
+				free(s[z]);
 			free(s);
 			return (NULL);
 		}
-		for (m = 0; m < k; m++)
-			s[j][m] = string[i++];
-		s[j][m] = 0;
+		/*Copy substring to allocated memory*/
+		for (l = 0; l < z; l++)
+			s[y][l] = string[x++];
+		/*Null-terminate the substring*/
+		s[y][l] = 0;
 	}
-	s[j] = NULL;
+	/*Set the last element of the array to NULL*/
+	s[y] = NULL;
 	return (s);
 }
