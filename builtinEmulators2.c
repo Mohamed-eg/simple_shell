@@ -31,7 +31,8 @@ int unset_alias(infolist_t *infolist, char *string)
 	c = *p;
 	*p = 0;
 	ret = deletNode(&(infolist->my_alias),
-		nodeIndex(infolist->my_alias, nodeStartWith(infolist->my_alias, string, -1)));
+		nodeIndex(infolist->my_alias,
+		nodeStartWith(infolist->my_alias, string, -1)));
 	*p = c;
 	return (ret);
 }
@@ -108,7 +109,8 @@ int aliasEmulator(infolist_t *infolist)
 		if (p)
 			set_alias(infolist, infolist->argument_v[i]);
 		else
-			print_alias(nodeStartWith(infolist->my_alias, infolist->argument_v[i], '='));
+			print_alias(nodeStartWith(infolist->my_alias,
+		infolist->argument_v[i], '='));
 	}
 
 	return (0);
