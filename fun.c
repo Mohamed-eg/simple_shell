@@ -1,77 +1,81 @@
 #include "header.h"
 
 /**
- * IsInteractive - returns true if shell is IsInteractive mode
- * @infolist: struct address
+ * IsInteractive - Check if the program is running in an interactive mode.
+ * @infolist: Pointer to the infolist_t structure containing information.
  *
- * Return: 1 if IsInteractive mode, 0 otherwise
+ * Return: 1 if interactive, 0 otherwise.
  */
 int IsInteractive(infolist_t *infolist)
 {
+	/* Check if STDIN is associated with a terminal and rfd is within*/
+	/* the range of standard descriptors */
 	return (isatty(STDIN_FILENO) && infolist->rfd <= 2);
 }
 
 /**
- * IsDelimeter - checks if character is a delimeter
- * @c: the char to check
- * @delim: the delimeter string
- * Return: 1 if true, 0 if false
+ * IsDelimeter - Check if a character is a delimiter.
+ * @chr_ch: The character to be checked.
+ * @dlmtr_str: The null-terminated string containing delimiter characters.
+ *
+ * Return: 1 if the character is a delimiter, 0 otherwise.
  */
-int IsDelimeter(char c, char *delim)
+int IsDelimeter(char chr_ch, char *dlmtr_str)
 {
-	while (*delim)
-		if (*delim++ == c)
-			return (1);
-	return (0);
+	while (*dlmtr_str)
+		if (*dlmtr_str++ == chr_ch)
+			return (1);/* Character is a delimiter */
+	return (0);/* Character is not a delimiter */
 }
 
 /**
- *ISAlphabetic - checks for alphabetic character
- *@c: The character to input
- *Return: 1 if c is alphabetic, 0 otherwise
+ * ISAlphabetic - Check if a character is an alphabetic character.
+ * @chr_in: The ASCII value of the character to be checked.
+ *
+ * Return: 1 if the character is alphabetic, 0 otherwise.
  */
-
-int ISAlphabetic(int c)
+int ISAlphabetic(int chr_in)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
+	if ((chr_in >= 'a' && chr_in <= 'z') || (chr_in >= 'A' && chr_in <= 'Z'))
+		return (1);/* Character is alphabetic */
 	else
-		return (0);
+		return (0);/* Character is not alphabetic */
 }
 
 /**
- *StrToInt - converts a string to an integer
- *@s: the string to be converted
- *Return: 0 if no numbers in string, otherwise converted number
- *to it is valeo
+ * StrToInt - Convert a string to an integer.
+ * @str: Pointer to the string to be converted.
+ *
+ * Return: The integer value.
  */
 
-int StrToInt(char *s)
+int StrToInt(char *str)
 {
-	int i, sign = 1, flag = 0, output;
+	int i, my_sign = 1, my_flag = 0, my_output;
 	unsigned int result = 0;
 
-	for (i = 0;  s[i] != '\0' && flag != 2; i++)
+	for (i = 0;  str[i] != '\0' && my_flag != 2; i++)
 	{
-		if (s[i] == '-')
-			sign *= -1;
+		if (str[i] == '-')
+			my_sign *= -1;/* Handle the sign of the number */
 
-		if (s[i] >= '0' && s[i] <= '9')
+		if (str[i] >= '0' && str[i] <= '9')
 		{
-			flag = 1;
+			my_flag = 1;/* Set the flag to indicate the presence of digits */
 			result *= 10;
-			result += (s[i] - '0');
+			result += (str[i] - '0');
 		}
-		else if (flag == 1)
+/* Stop processing when a non-digit character is encountered after digits */
+		else if (my_flag == 1)
 			flag = 2;
 	}
 
-	if (sign == -1)
-		output = -result;
+	if (my_sign == -1)
+		my_output = -result;
 	else
-		output = result;
+		my_output = result;
 
-	return (output);
+	return (my_output);
 }
 /*
 * for exampl
