@@ -15,7 +15,7 @@
 char *concatenatesStrings(char *str_one, char *str_two, int byt_num)
 {
 	int x, y;
-	char *x = str_one;
+	char *z = str_one;
 	/* Check for NULL pointers*/
 	if (str_one == NULL && str_two == NULL)
 		return (NULL);
@@ -36,7 +36,7 @@ char *concatenatesStrings(char *str_one, char *str_two, int byt_num)
 	if (y < byt_num)
 		str_one[x] = '\0';
 	/*Return the pointer to the concatenated string*/
-	return (x);
+	return (z);
 }
 
 /**
