@@ -1,155 +1,199 @@
 #include "header.h"
 
 /**
- * isChain - test if current char in buffer is a chain delimeter
- * @infolist: the parameter struct
- * @mybuff: the char buffer
- * @p: address of current position in mybuff
+ * isChain - Identifies and handles command chaining in input string.
+ * @infolist: Pointer to the infolist structure.
+ * @mybuff: Input string containing commands.
+ * @ptr: Pointer to the current position in the input string.
  *
- * Return: 1 if chain delimeter, 0 otherwise
+ * This function identifies command chaining in the input string and updates
+ * the infolist structure accordingly. It recognizes the following chaining
+ * operators: '||', '&&', and ';'.
+ *
+ * Return: 1 if a chaining operator is identified, 0 otherwise.
  */
-int isChain(infolist_t *infolist, char *mybuff, size_t *p)
+int isChain(infolist_t *infolist, char *mybuff, size_t *ptr)
 {
-	size_t j = *p;
+	size_t z = *ptr;
 
-	if (mybuff[j] == '|' && mybuff[j + 1] == '|')
+	/*Check for '||', '&&', or ';'(SEMICOLON)as chaining operators*/
+	if (mybuff[z] == '|' && mybuff[z + 1] == '|')
 	{
-		mybuff[j] = 0;
-		j++;
+		mybuff[z] = 0;
+		z++;
 		infolist->cmdBufferTybe = orChain;
 	}
-	else if (mybuff[j] == '&' && mybuff[j + 1] == '&')
+	else if (mybuff[z] == '&' && mybuff[z + 1] == '&')
 	{
-		mybuff[j] = 0;
-		j++;
+		mybuff[z] = 0;
+		z++;
 		infolist->cmdBufferTybe = andChain;
 	}
-	else if (mybuff[j] == ';') /* found end of this command */
+	else if (mybuff[z] == ';')
 	{
-		mybuff[j] = 0; /* replace semicolon with null */
+		mybuff[z] = 0;
 		infolist->cmdBufferTybe = cmdChain;
 	}
 	else
 		return (0);
-	*p = j;
+	/* Update the current position in the input string */
+	*ptr = z;
+	/* Return 1 to indicate a chaining operator was identified */
 	return (1);
 }
 
 /**
- * checkChain - checks we should continue chaining based on last status
- * @infolist: the parameter struct
- * @mybuff: the char buffer
- * @p: address of current position in mybuff
- * @i: starting position in mybuff
- * @mylen: length of mybuff
+ * checkChain - Checks command chaining conditions and modifies input string.
+ * @infolist: Pointer to the infolist structure.
+ * @mybuff: Input string containing commands.
+ * @ptr: Pointer to the current position in the input string.
+ * @x: Current position in the input string.
+ * @mylen: Length of the input string.
  *
- * Return: Void
+ * This function checks command chaining conditions based on previous command's
+ * exit status and modifies the input string accordingly. If previous command
+ * had an exit status, and the current command is part of an AND chain,input
+ * string is truncated. If the previous command had no exit status, and current
+ * command is part of an OR chain, the input string is truncated.
+ *
  */
-void checkChain(infolist_t *infolist, char *mybuff, size_t *p, size_t i,
+void checkChain(infolist_t *infolist, char *mybuff, size_t *ptr, size_t x,
 size_t mylen)
 {
-	size_t j = *p;
+	size_t z = *ptr;
 
+	/* Check if the previous command was part of an AND chain */
 	if (infolist->cmdBufferTybe == andChain)
 	{
+/* If the previous command had a non-zero exit status, truncate input string*/
 		if (infolist->my_status)
 		{
-			mybuff[i] = 0;
-			j = mylen;
+			mybuff[x] = 0;
+			z = mylen;
 		}
 	}
+/* Check if the previous command was part of an OR chain */
 	if (infolist->cmdBufferTybe == orChain)
 	{
 		if (!infolist->my_status)
 		{
-			mybuff[i] = 0;
-			j = mylen;
+/*If the previous command had a zero exit status, truncate the input string*/
+			mybuff[x] = 0;
+			z = mylen;
 		}
 	}
-
-	*p = j;
+/* Update the current position in the input string */
+	*ptr = z;
 }
 
 /**
- * replaceAlies - replaces an aliases in the tokenized string
- * @infolist: the parameter struct
+ * replaceAlies - Replaces the command with its alias if applicable.
+ * @infolist: Pointer to the infolist structure.
  *
- * Return: 1 if replaced, 0 otherwise
+ * This function searches for the specified command in the alias list
+ * (infolist->my_alias) and replaces it with its corresponding value.
+ * The replacement is done up to a maximum of 10 times to avoid potential
+ * infinite loops.
+ *
+ * Return: 1 on success, 0 on failure.
  */
 int replaceAlies(infolist_t *infolist)
 {
-	int i;
-	stringlist_t *node;
-	char *p;
+	int x;
+	stringlist_t *my_node;
+	char *ptr;
 
-	for (i = 0; i < 10; i++)
+	/*Loop to replace the command with its alias up to a maximum of 10 times*/
+	for (x = 0; x < 10; x++)
 	{
-		node = nodeStartWith(infolist->my_alias, infolist->argument_v[0], '=');
-		if (!node)
-			return (0);
-		free(infolist->argument_v[0]);
-		p = locateChar(node->string, '=');
-		if (!p)
-			return (0);
-		p = duplcatString(p + 1);
-		if (!p)
-			return (0);
-		infolist->argument_v[0] = p;
+	/* Find the alias node that starts with the specified command */
+	my_node = nodeStartWith(infolist->my_alias, infolist->argument_v[0], '=');
+	if (!my_node)
+		return (0);
+	/* Free the original command */
+	free(infolist->argument_v[0]);
+	/* Locate the value of the alias (after the '=' character) */
+	ptr = locateChar(my_node->string, '=');
+	if (!ptr)
+		return (0);
+	/* Duplicate and assign the alias value to the command */
+	ptr = duplcatString(ptr + 1);
+	if (!ptr)
+		return (0);
+	infolist->argument_v[0] = ptr;
 	}
+	/* Return 1 on success */
 	return (1);
 }
 
 /**
- * replaVars - replaces vars in the tokenized string
- * @infolist: the parameter struct
+ * replaVars - Replaces variables in the command arguments with their values.
+ * @infolist: Pointer to the infolist structure.
  *
- * Return: 1 if replaced, 0 otherwise
+ * This function replaces variables in the command arguments with their
+ * corresponding values. The supported variables include "$?" for the exit
+ * status, "$$" for the process ID, and environment variables.
+ *
+ * Return: Always returns 0.
  */
 int replaVars(infolist_t *infolist)
 {
-	int i = 0;
-	stringlist_t *node;
+	int x = 0;
+	stringlist_t *my_node;
 
-	for (i = 0; infolist->argument_v[i]; i++)
+	/* Loop through the command arguments */
+	for (x = 0; infolist->argument_v[x]; x++)
 	{
-		if (infolist->argument_v[i][0] != '$' || !infolist->argument_v[i][1])
-			continue;
+	/* Check if the argument is a variable starting with '$' */
+	if (infolist->argument_v[x][0] != '$' || !infolist->argument_v[x][1])
+		continue;
 
-		if (!compareStrings(infolist->argument_v[i], "$?"))
-		{
-			replaStr(&(infolist->argument_v[i]),
-				duplcatString(convert_number(infolist->my_status, 10, 0)));
-			continue;
-		}
-		if (!compareStrings(infolist->argument_v[i], "$$"))
-		{
-			replaStr(&(infolist->argument_v[i]),
-				duplcatString(convert_number(getpid(), 10, 0)));
-			continue;
-		}
-		node = nodeStartWith(infolist->envir, &infolist->argument_v[i][1], '=');
-		if (node)
-		{
-			replaStr(&(infolist->argument_v[i]),
-				duplcatString(locateChar(node->string, '=') + 1));
-			continue;
-		}
-		replaStr(&infolist->argument_v[i], duplcatString(""));
+	/* Replace "$?" with the exit status */
+	if (!compareStrings(infolist->argument_v[x], "$?"))
+	{
+		replaStr(&(infolist->argument_v[x]),
+			duplcatString(convert_number(infolist->my_status, 10, 0)));
+		continue;
+	}
+	/* Replace "$$" with the process ID */
+	if (!compareStrings(infolist->argument_v[x], "$$"))
+	{
+		replaStr(&(infolist->argument_v[x]),
+			duplcatString(convert_number(getpid(), 10, 0)));
+		continue;
+	}
+	/* Find the environment variable and replace it with its value */
+	my_node = nodeStartWith(infolist->envir, &infolist->argument_v[x][1], '=');
+	if (my_node)
+	{
+		replaStr(&(infolist->argument_v[x]),
+			duplcatString(locateChar(my_node->string, '=') + 1));
+		continue;
+	}
+	/* If the variable is not recognized, replace it with an empty string */
+	replaStr(&infolist->argument_v[x], duplcatString(""));
 
 	}
+	/* Always return 0 */
 	return (0);
 }
 
 /**
- * replaStr - replaces string
- * @old: address of old string
- * @new: new string
+ * replaStr - Replaces a string with a new one and frees the old string.
+ * @_old_str: Pointer to the old string to be replaced.
+ * @new_str: Pointer to the new string.
  *
- * Return: 1 if replaced, 0 otherwise
+ * This function replaces the old string with a new one and frees the memory
+ * occupied by the old string. The function updates the pointer to old string.
+ *
+ * Return: Always returns 1.
  */
-int replaStr(char **old, char *new)
+int replaStr(char **_old_str, char *new_str)
 {
-	free(*old);
-	*old = new;
+	/* Free the memory occupied by the old string */
+	free(*_old_str);
+	/* Update the pointer to the old string with the new string */
+	*_old_str = new_str;
+	/* Always return 1 */
 	return (1);
 }
