@@ -16,7 +16,7 @@ int exitEmulator(infolist_t *infolist)
 		exitcheck = StringToInteger(infolist->argument_v[1]);
 		if (exitcheck == -1)
 		{
-			infolist->status = 2;
+			infolist->my_status = 2;
 			PrintError(infolist, "Illegal number: ");
 			errPrintStr(infolist->argument_v[1]);
 			errPrintChar('\n');

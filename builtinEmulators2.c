@@ -9,7 +9,7 @@
  */
 int historyEmulator(infolist_t *infolist)
 {
-	elementList(infolist->history);
+	elementList(infolist->my_history);
 	return (0);
 }
 
@@ -30,8 +30,8 @@ int unset_alias(infolist_t *infolist, char *string)
 		return (1);
 	c = *p;
 	*p = 0;
-	ret = deletNode(&(infolist->alias),
-		nodeIndex(infolist->alias, nodeStartWith(infolist->alias, string, -1)));
+	ret = deletNode(&(infolist->my_alias),
+		nodeIndex(infolist->my_alias, nodeStartWith(infolist->my_alias, string, -1)));
 	*p = c;
 	return (ret);
 }
@@ -54,7 +54,7 @@ int set_alias(infolist_t *infolist, char *string)
 		return (unset_alias(infolist, string));
 
 	unset_alias(infolist, string);
-	return (ADDnodeEn(&(infolist->alias), string, 0) == NULL);
+	return (ADDnodeEn(&(infolist->my_alias), string, 0) == NULL);
 }
 
 /**
@@ -94,7 +94,7 @@ int aliasEmulator(infolist_t *infolist)
 
 	if (infolist->argument_c == 1)
 	{
-		node = infolist->alias;
+		node = infolist->my_alias;
 		while (node)
 		{
 			print_alias(node);
@@ -108,7 +108,7 @@ int aliasEmulator(infolist_t *infolist)
 		if (p)
 			set_alias(infolist, infolist->argument_v[i]);
 		else
-			print_alias(nodeStartWith(infolist->alias, infolist->argument_v[i], '='));
+			print_alias(nodeStartWith(infolist->my_alias, infolist->argument_v[i], '='));
 	}
 
 	return (0);

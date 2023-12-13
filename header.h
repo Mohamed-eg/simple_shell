@@ -79,12 +79,12 @@ typedef struct stringList
  *@err_code: the error code it can be 2 & it is always a number
  *@linenumflag: if on count this line of input
  *@filename: the program filename
- *@env: linked list local copy of environ
- *@environ: custom modified copy of environ from LL env
- *@history: the history node
- *@alias: the alias node
+ *@envir: linked list local copy of environ
+ *@environ: custom modified copy of environ from LL envir
+ *@my_history: the history node
+ *@my_alias: the alias node
  *@isenvchange: on if environ was changed
- *@status: the return status of the last exec'd command
+ *@my_status: the return status of the last exec'd command
  *@cmdBuffer: address of pointer to cmdBuffer, on if chaining
  *@cmdBufferTybe: CMD_type ||, &&, ;
  *@rfd: the fileDes from which to read line input
@@ -100,12 +100,12 @@ typedef struct PassedInformation
 	int err_code;
 	int linenumflag;
 	char *filename;
-	stringlist_t *env;
-	stringlist_t *history;
-	stringlist_t *alias;
+	stringlist_t *envir;
+	stringlist_t *my_history;
+	stringlist_t *my_alias;
 	char **environ;
 	int isenvchange;
-	int status;
+	int my_status;
 
 	char **cmdBuffer; /* pointer to CMD ; chain buffer, for memory mangement */
 	int cmdBufferTybe; /* CMD_type ||, &&, ; */
@@ -209,14 +209,14 @@ void clearInformation(infolist_t *);
 void setInformation(infolist_t *, char **);
 void freeInformation(infolist_t *, int);
 
-/* env.c  */
+/* environment.c  */
 char *getEnv(infolist_t *, const char *);
 int my_env(infolist_t *);
 int mySetEnv(infolist_t *);
 int unSetEnv(infolist_t *);
 int populateEnvList(infolist_t *);
 
-/* env2.c advans */
+/* environment2.c advans */
 char **our_environ(infolist_t *);
 int remov_environ(infolist_t *, char *);
 int init_env_var(infolist_t *, char *, char *);

@@ -60,30 +60,44 @@ void setInformation(infolist_t *infolist, char **arg_vec)
 }
 
 /**
- * freeInformation - frees infolist_t struct fields
- * @infolist: struct address
- * @alllist: true if freeing alllist fields
+ * freeInformation - Frees memory associated with an infolist structure.
+ * @infolist: Pointer to the infolist structure to be freed.
+ * @alllist: Integer flag indicating whether to free all associated lists.
+ *
+ * This function frees the memory allocated for various fields within the
+ * infolist structure. The memory for individual fields is freed based on the
+ * conditions specified by the `alllist` flag.
  */
 void freeInformation(infolist_t *infolist, int alllist)
 {
+	/* Free the argument_v field */
 	freeFun(infolist->argument_v);
 	infolist->argument_v = NULL;
+	/* Set str_path to NULL */
 	infolist->str_path = NULL;
+	/* Check if alllist flag is set */
 	if (alllist)
-	{
+	{/* Free the argument field if cmdBuffer is not set */
 		if (!infolist->cmdBuffer)
 			free(infolist->argument);
-		if (infolist->env)
-			freeList(&(infolist->env));
-		if (infolist->history)
-			freeList(&(infolist->history));
-		if (infolist->alias)
-			freeList(&(infolist->alias));
+		/* Free the envir list */
+		if (infolist->envir)
+			freeList(&(infolist->envir));
+		/* Free the my_history list */
+		if (infolist->my_history)
+			freeList(&(infolist->my_history));
+		/* Free the my_alias list */
+		if (infolist->my_alias)
+			freeList(&(infolist->my_alias));
+		/* Free the environ field */
 		freeFun(infolist->environ);
 			infolist->environ = NULL;
+		/* Free pointers in cmdBuffer */
 		freePointers((void **)infolist->cmdBuffer);
+		/* Close file descriptor if rfd is greater than 2 */
 		if (infolist->rfd > 2)
 			close(infolist->rfd);
+		/* Put a character to bufferFlush */
 		PutCharacter(bufferFlush);
 	}
 }

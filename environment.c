@@ -8,20 +8,20 @@
  */
 int my_env(infolist_t *infolist)
 {
-	printListString(infolist->env);
+	printListString(infolist->envir);
 	return (0);
 }
 
 /**
  * getEnv - gets the value of an environ variable
  * @infolist: Structure containing potential arguments. Used to maintain
- * @var_name: env var var_name
+ * @var_name: envir var var_name
  *
  * Return: the value
  */
 char *getEnv(infolist_t *infolist, const char *var_name)
 {
-	stringlist_t *node = infolist->env;
+	stringlist_t *node = infolist->envir;
 	char *p;
 
 	while (node)
@@ -75,7 +75,7 @@ int unSetEnv(infolist_t *infolist)
 }
 
 /**
- * populateEnvList - populates env linked list
+ * populateEnvList - populates envir linked list
  * @infolist: Structure containing potential arguments. Used to maintain
  *          constant function prototype.
  * Return: Always 0
@@ -87,6 +87,6 @@ int populateEnvList(infolist_t *infolist)
 
 	for (i = 0; environ[i]; i++)
 		ADDnodeEn(&node, environ[i], 0);
-	infolist->env = node;
+	infolist->envir = node;
 	return (0);
 }

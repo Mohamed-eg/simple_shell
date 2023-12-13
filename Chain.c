@@ -52,7 +52,7 @@ size_t len)
 
 	if (infolist->cmdBufferTybe == andChain)
 	{
-		if (infolist->status)
+		if (infolist->my_status)
 		{
 			buf[i] = 0;
 			j = len;
@@ -60,7 +60,7 @@ size_t len)
 	}
 	if (infolist->cmdBufferTybe == orChain)
 	{
-		if (!infolist->status)
+		if (!infolist->my_status)
 		{
 			buf[i] = 0;
 			j = len;
@@ -84,7 +84,7 @@ int replaceAlies(infolist_t *infolist)
 
 	for (i = 0; i < 10; i++)
 	{
-		node = nodeStartWith(infolist->alias, infolist->argument_v[0], '=');
+		node = nodeStartWith(infolist->my_alias, infolist->argument_v[0], '=');
 		if (!node)
 			return (0);
 		free(infolist->argument_v[0]);
@@ -118,7 +118,7 @@ int replaVars(infolist_t *infolist)
 		if (!compareStrings(infolist->argument_v[i], "$?"))
 		{
 			replaStr(&(infolist->argument_v[i]),
-				duplcatString(convert_number(infolist->status, 10, 0)));
+				duplcatString(convert_number(infolist->my_status, 10, 0)));
 			continue;
 		}
 		if (!compareStrings(infolist->argument_v[i], "$$"))
@@ -127,7 +127,7 @@ int replaVars(infolist_t *infolist)
 				duplcatString(convert_number(getpid(), 10, 0)));
 			continue;
 		}
-		node = nodeStartWith(infolist->env, &infolist->argument_v[i][1], '=');
+		node = nodeStartWith(infolist->envir, &infolist->argument_v[i][1], '=');
 		if (node)
 		{
 			replaStr(&(infolist->argument_v[i]),

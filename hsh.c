@@ -32,12 +32,12 @@ int shellLoob(infolist_t *infolist, char **argument_v)
 	}
 	w_history(infolist);
 	freeInformation(infolist, 1);
-	if (!IsInteractive(infolist) && infolist->status)
-		exit(infolist->status);
+	if (!IsInteractive(infolist) && infolist->my_status)
+		exit(infolist->my_status);
 	if (builtin_ret == -2)
 	{
 		if (infolist->err_code == -1)
-			exit(infolist->status);
+			exit(infolist->my_status);
 		exit(infolist->err_code);
 	}
 	return (builtin_ret);
@@ -115,7 +115,7 @@ void cheackPasses(infolist_t *infolist)
 			forkThread(infolist);
 		else if (*(infolist->argument) != '\n')
 		{
-			infolist->status = 127;
+			infolist->my_status = 127;
 			PrintError(infolist, "not found\n");
 		}
 	}
@@ -152,11 +152,11 @@ void forkThread(infolist_t *infolist)
 	}
 	else
 	{
-		wait(&(infolist->status));
-		if (WIFEXITED(infolist->status))
+		wait(&(infolist->my_status));
+		if (WIFEXITED(infolist->my_status))
 		{
-			infolist->status = WEXITSTATUS(infolist->status);
-			if (infolist->status == 126)
+			infolist->my_status = WEXITSTATUS(infolist->my_status);
+			if (infolist->my_status == 126)
 				PrintError(infolist, "Permission denied\n");
 		}
 	}

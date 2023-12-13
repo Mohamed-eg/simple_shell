@@ -49,7 +49,7 @@ int w_history(infolist_t *infolist)
 	free(filename);
 	if (fileDes == -1)
 		return (-1);
-	for (node = infolist->history; node; node = node->next_node)
+	for (node = infolist->my_history; node; node = node->next_node)
 	{
 		charsCount(node->string, fileDes);
 		WFileDescreptor('\n', fileDes);
@@ -103,7 +103,7 @@ int r_history(infolist_t *infolist)
 	free(buffer);
 	infolist->histnum = linecount;
 	while (infolist->histnum-- >= maxHistory)
-		deletNode(&(infolist->history), 0);
+		deletNode(&(infolist->my_history), 0);
 	renumberHistory(infolist);
 	return (infolist->histnum);
 }
@@ -120,12 +120,12 @@ int buildHistoryList(infolist_t *infolist, char *buffer, int linecount)
 {
 	stringlist_t *node = NULL;
 
-	if (infolist->history)
-		node = infolist->history;
+	if (infolist->my_history)
+		node = infolist->my_history;
 	ADDnodeEn(&node, buffer, linecount);
 
-	if (!infolist->history)
-		infolist->history = node;
+	if (!infolist->my_history)
+		infolist->my_history = node;
 	return (0);
 }
 
@@ -137,7 +137,7 @@ int buildHistoryList(infolist_t *infolist, char *buffer, int linecount)
  */
 int renumberHistory(infolist_t *infolist)
 {
-	stringlist_t *node = infolist->history;
+	stringlist_t *node = infolist->my_history;
 	int i = 0;
 
 	while (node)

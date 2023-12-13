@@ -10,7 +10,7 @@ char **our_environ(infolist_t *infolist)
 {
 	if (!infolist->environ || infolist->isenvchange)
 	{
-		infolist->environ = listToStrings(infolist->env);
+		infolist->environ = listToStrings(infolist->envir);
 		infolist->isenvchange = 0;
 	}
 
@@ -22,11 +22,11 @@ char **our_environ(infolist_t *infolist)
  * @infolist: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  *  Return: 1 on delete, 0 otherwise
- * @var: the string env var property
+ * @var: the string envir var property
  */
 int remov_environ(infolist_t *infolist, char *var)
 {
-	stringlist_t *node = infolist->env;
+	stringlist_t *node = infolist->envir;
 	size_t i = 0;
 	char *p;
 
@@ -38,9 +38,9 @@ int remov_environ(infolist_t *infolist, char *var)
 		p = startsWith(node->string, var);
 		if (p && *p == '=')
 		{
-			infolist->isenvchange = deletNode(&(infolist->env), i);
+			infolist->isenvchange = deletNode(&(infolist->envir), i);
 			i = 0;
-			node = infolist->env;
+			node = infolist->envir;
 			continue;
 		}
 		node = node->next_node;
@@ -54,8 +54,8 @@ int remov_environ(infolist_t *infolist, char *var)
  *             or modify an existing one
  * @infolist: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
- * @var: the string env var property
- * @value: the string env var value
+ * @var: the string envir var property
+ * @value: the string envir var value
  *  Return: Always 0
  */
 int init_env_var(infolist_t *infolist, char *var, char *value)
@@ -73,7 +73,7 @@ int init_env_var(infolist_t *infolist, char *var, char *value)
 	copyStrings(buf, var);
 	concatenetStrings(buf, "=");
 	concatenetStrings(buf, value);
-	node = infolist->env;
+	node = infolist->envir;
 	while (node)
 	{
 		p = startsWith(node->string, var);
@@ -86,7 +86,7 @@ int init_env_var(infolist_t *infolist, char *var, char *value)
 		}
 		node = node->next_node;
 	}
-	ADDnodeEn(&(infolist->env), buf, 0);
+	ADDnodeEn(&(infolist->envir), buf, 0);
 	free(buf);
 	infolist->isenvchange = 1;
 	return (0);
