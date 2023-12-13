@@ -138,7 +138,7 @@ void cheackPasses(infolist_t *infolist)
 		else if (*(infolist->argument) != '\n')
 		{
 			infolist->my_status = 127;
-			PrintError(infolist, " it is not found\n");
+			PrintError(infolist, "not found\n");
 		}
 	}
 }
