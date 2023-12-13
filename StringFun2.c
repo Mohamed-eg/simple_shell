@@ -84,8 +84,8 @@ void Puts(char *string)
  * duplcatString - Duplicates a string and reverses its characters.
  * @string: The input string to be duplicated and reversed.
  * Return: A pointer to the duplicated and reversed string.
- *         Returns NULL if the input string is NULL or if memory allocation fails.
- * Note: The caller is responsible for freeing the allocated memory using free().
+ *         Returns NULL if the input is NULL or if memory allocation fails.
+ * Note: The caller is responsible for freeing the allocated memory.
  * you need to include <stdlib.h> for malloc
  */
 char *duplcatString(const char *string)
@@ -110,14 +110,14 @@ char *duplcatString(const char *string)
 }
 
 /**
- * **SplitString - splits a string into array of substrings based on delimiters.
+ * SplitString - splits a string into array of substrings based on delimiters.
  * IsDelimiter - Checks if a character is a delimiter.
  * @string: the input string to be split.
  * @deli: the delimeter string
- *Return: A dynamically allocated array of strings (char **),
- *		  where each element represents a substring. The last element is set to NULL
- * 		  Returns NULL if the input string is empty or if memory allocation fails.
- * Note: The caller is responsible for freeing the allocated memory using free().
+ * Return: A dynamically allocated array of strings (char **),
+ * where each element represents a substring. The last element is set to NULL
+ * Returns NULL if the input string is empty or if memory allocation fails.
+ * Note: The caller is responsible for freeing the allocated memory.
  */
 
 char **SplitString(char *string, char *deli)
@@ -125,50 +125,40 @@ char **SplitString(char *string, char *deli)
 	int x, y, z, l, n = 0;
 	char **s;
 
-	/*Check for empty string*/
-	if (string == NULL || string[0] == 0)
+	if (string == NULL || string[0] == 0)/*Check for empty string*/
 		return (NULL);
 	/*If delimiters are not provided, use a space as the default delimiter*/
 	if (!deli)
 		deli = " ";
 	/*Count the number of words based on delimiters*/
 	for (x = 0; string[x] != '\0'; x++)
-		if (!IsDelimeter(string[x], deli) && (IsDelimeter(string[x + 1], deli) || !string[x + 1]))
+		if (!IsDelimeter(string[x], deli) &&
+		(IsDelimeter(string[x + 1], deli) || !string[x + 1]))
 			n++;
-
-	/* Return NULL if no words found*/
-	if (n == 0)
-		return (NULL);
-	/*Allocate memory for the array of strings*/
+	if (n == 0)/* Return NULL if no words found*/
+		return (NULL);/*Allocate memory for the array of strings*/
 	s = malloc((1 + n) * sizeof(char *));
 	if (!s)
 		return (NULL);
 	for (x = 0, y = 0; y < n; y++)
-	{
-		/*Skip leading delimiters*/
+	{	/*Skip leading delimiters*/
 		while (IsDelimeter(string[x], deli))
 			x++;
-		z = 0;
-		/*Count characters until the next delimiter or end of string*/
+		z = 0;/*Count characters until the next delimiter or end of string*/
 		while (!IsDelimeter(string[x + z], deli) && string[x + z])
-			z++;
-		/*Allocate memory for the substring*/
+			z++;/*Allocate memory for the substring*/
 		s[y] = malloc((z + 1) * sizeof(char));
 		if (!s[y])
-		{
-			/*Free allocated memory on failure*/
+		{	/*Free allocated memory on failure*/
 			for (z = 0; z < y; z++)
 				free(s[z]);
 			free(s);
 			return (NULL);
 		}
-		/*Copy substring to allocated memory*/
-		for (l = 0; l < z; l++)
+		for (l = 0; l < z; l++)/*Copy substring to allocated memory*/
 			s[y][l] = string[x++];
 		s[y][l] = 0;
 	}
-	/*Set the last element of the array to NULL*/
-	s[y] = NULL;
-	/*Return the array of substrings*/
-	return (s);
+	s[y] = NULL;/*Set the last element of the array to NULL*/
+	return (s);/*Return the array of substrings*/
 }

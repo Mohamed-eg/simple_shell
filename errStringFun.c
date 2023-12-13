@@ -43,7 +43,7 @@ int errPrintChar(char c)
 
 /**
  * WFileDescreptor - writes the character c to given fileDes
- * @c: The character to print
+ * @x: The character to print
  * @fileDes: The filedescriptor to write to
  *
  * Return: On success 1.

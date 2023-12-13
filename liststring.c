@@ -50,15 +50,16 @@ stringlist_t *ADDnode(stringlist_t **firstNode, const char *string, int number)
  * ADDnodeEn - Adds a new node to the end of a linked list.
  *
  * This function creates a new node with the specified numeric value and, if
- * provided, a duplicated string. The new node is added to the end of the linked list.
- *
+ * provided, a duplicated string. The new node is added
+ * to the end of the linked list.
  * @firstNode: Pointer to the pointer to the head of the linked list.
  * @string: The string content for the new node (NULL if not provided).
  * @number: The numeric value for the new node.
  *
  * Return: Pointer to the newly added node, or NULL on failure.
  */
-stringlist_t *ADDnodeEn(stringlist_t **firstNode, const char *string, int number)
+stringlist_t *ADDnodeEn(stringlist_t **firstNode,
+	const char *string, int number)
 {
 	stringlist_t *newNode, *currentNode;
 

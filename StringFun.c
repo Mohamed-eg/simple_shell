@@ -53,7 +53,8 @@ int compareStrings(char *strone, char *strtwo)
  * @prefix_in: The prefix to check for at the beginning of the check_str.
  *
  * Return:
- * - A pointer to the remaining part of the check_str if it starts with the prefix.
+ * - A pointer to the remaining part of the check_str if it starts
+ * with the prefix.
  * - NULL if the check_str does not start with the prefix.
  */
 char *startsWith(const char *check_str, const char *prefix_in)
@@ -68,7 +69,7 @@ char *startsWith(const char *check_str, const char *prefix_in)
 }
 
 /**
- * concatStrings - Concatenates two strings.
+ * concatenetStrings - Concatenates two strings.
  * @destination: The destination string.
  * @source: The source string to be concatenated to the destination.
  *

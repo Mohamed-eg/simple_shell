@@ -1,12 +1,13 @@
 #include "header.h"
 
 /**
- * concatenatesStrings - Concatenates two strings up to a specified number of bytes.
+ * concatenatesStrings - Concatenates two strings up to a
+ * specified number of bytes.
  * @str_one: The destination string to which the other string is concatenated.
  * @str_two: The source string to be concatenated.
  * @byt_num: The maximum number of bytes to concatenate from str_two.
  *
- * Return: A pointer to the concatenated string (str_one). If str_one is NULL or
+ * Return: A pointer to the concatenated string (str_one).If str_one is NULL or
  *         memory allocation fails, returns NULL.
  *
  * Note: The caller is responsible for freeing any allocated memory.
@@ -56,7 +57,8 @@ char *locateChar(char *x, char t)
 }
 
 /**
- * SplitString2 - Splits a string into an array of substrings based on a delimiter.
+ * SplitString2 - Splits a string into an array of substrings
+ * based on a delimiter.
  * @string: The input string to be split.
  * @delimiter: The delimiter character used to separate substrings.
  *
@@ -64,7 +66,7 @@ char *locateChar(char *x, char t)
  *         element set to NULL. Returns NULL if the input string is empty or if
  *         memory allocation fails.
  *
- * Note: The caller is responsible for freeing the allocated memory using free().
+ * Note: The caller is responsible for freeing the allocated memory.
  */
 char **SplitString2(char *string, char delimiter)
 {
@@ -78,38 +80,33 @@ char **SplitString2(char *string, char delimiter)
 		if ((string[x] != delimiter && string[x + 1] == delimiter) ||
 		    (string[x] != delimiter && !string[x + 1]) || string[x + 1] == delimiter)
 			n++;
-	/*Return NULL if no substrings found*/
-	if (n == 0)
+	if (n == 0)/*Return NULL if no substrings found*/
 		return (NULL);
 	/*Allocate memory for the array of strings*/
 	s = malloc((1 + n) * sizeof(char *));
 	if (!s)
 		return (NULL);
 	for (x = 0, y = 0; y < n; y++)
-	{
-	/* Skip leading delimiters*/
+	{/* Skip leading delimiters*/
 		while (string[x] == delimiter && string[x] != delimiter)
 			x++;
 		z = 0;
 		/*Count characters until the next delimiter or end of string*/
-		while (string[x + z] != delimiter && string[x + z] && string[x + z] != delimiter)
+		while (string[x + z] != delimiter && string[x + z] &&
+		string[x + z] != delimiter)
 			z++;
 		s[y] = malloc((z + 1) * sizeof(char));
 		if (!s[y])
 		{
-		/*Free allocated memory on failure*/
-			for (z = 0; z < y; z++)
+			for (z = 0; z < y; z++)/*Free allocated memory on failure*/
 				free(s[z]);
 			free(s);
 			return (NULL);
 		}
-		/*Copy substring to allocated memory*/
-		for (l = 0; l < z; l++)
+		for (l = 0; l < z; l++)/*Copy substring to allocated memory*/
 			s[y][l] = string[x++];
-		/*Null-terminate the substring*/
-		s[y][l] = 0;
+		s[y][l] = 0;/*Null-terminate the substring*/
 	}
-	/*Set the last element of the array to NULL*/
-	s[y] = NULL;
+	s[y] = NULL;/*Set the last element of the array to NULL*/
 	return (s);
 }

@@ -14,17 +14,17 @@
 #include <sys/wait.h>
 #include <sys/stat.h>/*for stat() or struct stat*/
 #include <limits.h>
-/*This header file contains various constants that represent
+/*
+*This header file contains various constants that represent
 * the limits of various properties of the implementation,
 * such as the maximum and minimum values that can be held
 * by different data types.
-* https://www.ibm.com/docs/en/zos/3.1.0?topic=files-limitsh-standard-values-limits-resources
 */
 #include <fcntl.h>
-/* file control operations. It provides constants used with
+/*
+* file control operations. It provides constants used with
 * the fcntl function, which can be used to perform various
 * operations on open files.
-* 
 */
 #include <errno.h>
 #include <stddef.h> /*for size_t data type*/
@@ -69,8 +69,8 @@ typedef struct stringList
 } stringlist_t;/*creates a typedef alias named stringlist_t*/
 
 /**
- *struct PassedInformation - contains pseudo-arguements to pass into a function,
- *					allowing uniform prototype for function pointer struct
+ *struct PassedInformation - contains pseudo-arguements to pass into
+ *a function,	allowing uniform prototype for function pointer struct
  *@argument: a string generated from getline containing arguements
  *@argument_v: an array of strings generated from argument
  *@str_path: a string str_path for the current command
@@ -118,13 +118,17 @@ typedef struct PassedInformation
 	0, 0, 0}
 
 /**
- *struct Builtin_Comands - contains a Builtin_Comands string and related function
- *@flag: the Builtin_Comands command flag
- *@function: the function
+ * struct Builtin_Comands - Structure for storing information
+ * about built-in commands.This structure defines a template for storing
+ * information about built-in commands. It includes a flagand a function
+ * pointer to the corresponding function that handles the command.
+ * @flag: Command name or identifier.
+ * @function: Pointer to the function handling the command.
  */
 typedef struct Builtin_Comands
 {
-	char *flag;
+	char *flag;/**< Command name or identifier. */
+	/**< Pointer to the function handling the command. */
 	int (*function)(infolist_t *);
 } stracOfBuildIn;
 
@@ -139,10 +143,6 @@ void forkThread(infolist_t *);
 int isCMD(infolist_t *, char *);
 char *duplCharacters(char *, int, int);
 char *findPath(infolist_t *, char *, char *);
-
- /* loophsh.c 
- int loophsh(char **); I put the main loop in hsh.c
-*/
 
 /* errStringFun.c */
 void errPrintStr(char *);

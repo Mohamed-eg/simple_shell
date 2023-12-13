@@ -18,7 +18,8 @@ char *fillMemoryWith(char *a, char s, unsigned int x)
 }
 
 /**
- * freeFun - Frees memory associated with a dynamically allocated array of strings.
+ * freeFun - Frees memory associated with a dynamically
+ * allocated array of strings.
  * @ss: Pointer to a pointer to strings.
  */
 void freeFun(char **ss)

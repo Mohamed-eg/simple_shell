@@ -15,7 +15,8 @@ char *getFileHistory(infolist_t *infolist)
 	if (!dir)
 		return (NULL);
 	/*Allocate memory for the buffer to hold the full path*/
-	buffer = malloc(sizeof(char) * (getStringLength(dir) + getStringLength(fileHistory) + 2));
+	buffer = malloc(sizeof(char) * (getStringLength(dir) +
+	getStringLength(fileHistory) + 2));
 	if (!buffer)
 		return (NULL);
 	/*Initialize the buffer*/

@@ -16,18 +16,18 @@ int isChain(infolist_t *infolist, char *buf, size_t *p)
 	{
 		buf[j] = 0;
 		j++;
-		infolist->cmd_buf_type = orChain;
+		infolist->cmdBufferTybe = orChain;
 	}
 	else if (buf[j] == '&' && buf[j + 1] == '&')
 	{
 		buf[j] = 0;
 		j++;
-		infolist->cmd_buf_type = andChain;
+		infolist->cmdBufferTybe = andChain;
 	}
 	else if (buf[j] == ';') /* found end of this command */
 	{
 		buf[j] = 0; /* replace semicolon with null */
-		infolist->cmd_buf_type = cmdChain;
+		infolist->cmdBufferTybe = cmdChain;
 	}
 	else
 		return (0);
@@ -45,11 +45,12 @@ int isChain(infolist_t *infolist, char *buf, size_t *p)
  *
  * Return: Void
  */
-void checkChain(infolist_t *infolist, char *buf, size_t *p, size_t i, size_t len)
+void checkChain(infolist_t *infolist, char *buf, size_t *p, size_t i,
+size_t len)
 {
 	size_t j = *p;
 
-	if (infolist->cmd_buf_type == andChain)
+	if (infolist->cmdBufferTybe == andChain)
 	{
 		if (infolist->status)
 		{
@@ -57,7 +58,7 @@ void checkChain(infolist_t *infolist, char *buf, size_t *p, size_t i, size_t len
 			j = len;
 		}
 	}
-	if (infolist->cmd_buf_type == orChain)
+	if (infolist->cmdBufferTybe == orChain)
 	{
 		if (!infolist->status)
 		{

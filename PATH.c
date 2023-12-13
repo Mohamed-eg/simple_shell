@@ -60,7 +60,8 @@ char *duplCharacters(char *patheString, int startIndex, int stopIndex)
  * @patheString: The colon-separated list of directories.
  * @CMD: The command to search for.
  *
- * Return: A pointer to the full path of the command if found, or NULL otherwise.
+ * Return: A pointer to the full path of the command if found,
+ * or NULL otherwise.
  */
 char *findPath(infolist_t *infolist, char *patheString, char *CMD)
 {
@@ -80,18 +81,15 @@ char *findPath(infolist_t *infolist, char *patheString, char *CMD)
 
 	/*Loop through the patheString*/
 	while (1)
-	{
-		/*Check for end of string or colon separator*/
+	{/*Check for end of string or colon separator*/
 		if (!patheString[x] || patheString[x] == ':')
-		{
-			/*Extract the directory path from patheString*/
+		{/*Extract the directory path from patheString*/
 			str_path = duplCharacters(patheString, currentPos, x);
 			/*If str_path is empty, concatenate CMD directly*/
 			if (!*str_path)
 				concatenetStrings(str_path, CMD);
 			else
-			{
-				/*Concatenate str_path, "/", and CMD*/
+			{/*Concatenate str_path, "/", and CMD*/
 				concatenetStrings(str_path, "/");
 				concatenetStrings(str_path, CMD);
 			}
@@ -100,12 +98,10 @@ char *findPath(infolist_t *infolist, char *patheString, char *CMD)
 				return (str_path);
 			/*Break if end of string is reached*/
 			if (!patheString[x])
-				break;
-			/*Update currentPos for the next directory*/
+				break;/*Update currentPos for the next directory*/
 			currentPos = x;
 		}
-		/*Move to the next character*/
-		x++;
+		x++;/*Move to the next character*/
 	}
 	return (NULL);/*Return NULL if the command is not found in any directory*/
 }

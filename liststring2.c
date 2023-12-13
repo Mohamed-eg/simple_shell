@@ -17,20 +17,22 @@ size_t listLength(const stringlist_t *x)
 		j++;
 	}
 	return (j);
-	/*After the loop, the function returns the
-	final value of j, which represents the total number of nodes
-	in the linked list.*/
+	/*
+	* After the loop, the function returns the
+	* final value of j, which represents the total number of nodes
+	* in the linked list.
+	*/
 }
 
 /**
  * listToStrings - Converts a linked list of strings to an array of strings.
  *
- * Given the firstNode of a linked list of strings, this function creates an array
- * of strings, each containing the content of a node in the linked list.
- *
+ * Given the firstNode of a linked list of strings, this function creates
+ * an array of strings, each containing the content of a
+ * node in the linked list.
  * @firstNode: Pointer to the firstNode of the linked list (stringlist_t).
  *
- * Return: An array of strings representing the linked list, or NULL on failure.
+ * Return: An array of strings representing the linked list,or NULL on failure.
  *         The caller is responsible for freeing the memory allocated for the
  *         array and its strings.
  */
@@ -41,21 +43,18 @@ char **listToStrings(stringlist_t *firstNode)
 	char **strs;
 	char *string;
 
-	/* Check for invalid input or an empty list */
-	if (!firstNode || !x)
+	if (!firstNode || !x)/* Check for invalid input or an empty list */
 		return (NULL);
 	/* Allocate memory for the array of strings */
 	strs = malloc(sizeof(char *) * (x + 1));
 	if (!strs)
 		return (NULL);
-	/* Traverse the linked list and convert each currentNode's content to a string */
+/* Traverse the linked list and convert each Node's content to a string */
 	for (x = 0; currentNode; currentNode = currentNode->next_node, x++)
-	{
-		/* Allocate memory for the string */
+	{/* Allocate memory for the string */
 		string = malloc(getStringLength(currentNode->string) + 1);
 		if (!string)
-		{
-			/* Free allocated memory if an error occurs */
+		{/* Free allocated memory if an error occurs */
 			for (z = 0; z < x; z++)
 				free(strs[z]);
 			free(strs);
@@ -66,10 +65,8 @@ char **listToStrings(stringlist_t *firstNode)
 		string = copyStrings(string, currentNode->string);
 		strs[x] = string;
 	}
-	/* Set the last element of the array to NULL */
-	strs[x] = NULL;
-	/* Return the array of strings */
-	return (strs);
+	strs[x] = NULL;/* Set the last element of the array to NULL */
+	return (strs);/* Return the array of strings */
 }
 
 
@@ -106,7 +103,7 @@ size_t elementList(const stringlist_t *x)
  * nodeStartWith - Finds a node with a string starting with a given prefix.
  *
  * Given the head of a linked list, this function searches for a node whose
- * string content starts with the specified prefix and optionally has a specific
+ * string content starts with the specified prefix and optionally has specific
  * character at the next position.
  *
  * @headNode: Pointer to the head of the linked list (stringlist_t).

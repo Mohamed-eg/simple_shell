@@ -68,9 +68,7 @@ int findBuiltinCom(infolist_t *infolist)
 	};
 
 	for (i = 0; builtintbl[i].flag; i++)
-		if (compareStrings(infolist->argument_v[0] , builtintbl[i].flag) == 0)
-/*or you can use (compareString(infolist->argument_v[0] , builtintbl[i].flag)==0)
-* and it will retarn zero if s1 == s2*/
+		if (compareStrings(infolist->argument_v[0], builtintbl[i].flag) == 0)
 		{
 			infolist->err_line_num++;
 			built_in_ret = builtintbl[i].function(infolist);
@@ -102,7 +100,8 @@ void cheackPasses(infolist_t *infolist)
 	if (!k)
 		return;
 
-	str_path = findPath(infolist, getEnv(infolist, "PATH="), infolist->argument_v[0]);
+	str_path = findPath(infolist, getEnv(infolist, "PATH="),
+	infolist->argument_v[0]);
 	if (str_path)
 	{
 		infolist->str_path = str_path;
@@ -111,7 +110,8 @@ void cheackPasses(infolist_t *infolist)
 	else
 	{
 		if ((IsInteractive(infolist) || getEnv(infolist, "PATH=")
-			|| infolist->argument_v[0][0] == '/') && isCMD(infolist, infolist->argument_v[0]))
+			|| infolist->argument_v[0][0] == '/') &&
+			isCMD(infolist, infolist->argument_v[0]))
 			forkThread(infolist);
 		else if (*(infolist->argument) != '\n')
 		{
@@ -140,7 +140,8 @@ void forkThread(infolist_t *infolist)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(infolist->str_path, infolist->argument_v, our_environ(infolist)) == -1)
+		if (execve(infolist->str_path, infolist->argument_v,
+		our_environ(infolist)) == -1)
 		{
 			freeInformation(infolist, 1);
 			if (errno == EACCES)
