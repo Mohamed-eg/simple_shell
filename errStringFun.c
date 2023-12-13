@@ -1,85 +1,115 @@
 #include "header.h"
 
 /**
- *errPrintStr - prints an input string
- * @string: the string to be printed
+ * errPrintStr - Prints an input string.
+ * @string: The string to be printed.
  *
- * Return: Nothing
+ * This function is responsible for printing an input string. It is typically
+ * used for error messages or informational messages in the program.
+ *
+ * Return: Nothing.
  */
 void errPrintStr(char *string)
 {
-	int i = 0;
+	int x = 0;
 
+	/* Check if the input string is NULL */
 	if (!string)
 		return;
-	while (string[i] != '\0')
+/* Iterate through the characters of the input string */
+	while (string[x] != '\0')
 	{
-		errPrintChar(string[i]);
-		i++;
+		/* Print each character to the standard error stream */
+		errPrintChar(string[x]);
+		x++;
 	}
 }
 
 /**
- * errPrintChar - writes the character c to stander error
- * @c: The character to print
+ * errPrintChar - Prints a character to the standard error stream.
+ * @ch: The character to be printed.
  *
- * Return: On success 1.
- * On error, return -1, and errno is set acording to errno stander.
+ * This function manages a static buffer to accumulate characters and flushes
+ * the buffer when it reaches a specified size or when a flush character is
+ * encountered. It prints characters to the standard error stream.
+ *
+ * Return: Always returns 1.
  */
-int errPrintChar(char c)
+int errPrintChar(char ch)
 {
-	static int i;
+	/* Static variables for buffer management */
+	static int x;
 	static char mybuff[writeBufferSize];
 
-	if (c == bufferFlush || i >= writeBufferSize)
+	/* Check for buffer flush condition or buffer size limit */
+	if (ch == bufferFlush || x >= writeBufferSize)
 	{
-		write(2, mybuff, i);
-		i = 0;
+	/* Flush the buffer by writing its content to the standard error stream */
+		write(2, mybuff, x);
+		x = 0;/* Reset buffer index after flushing */
 	}
-	if (c != bufferFlush)
-		mybuff[i++] = c;
-	return (1);
+	/* If not a buffer flush character, store the character in the buffer */
+	if (ch != bufferFlush)
+		mybuff[x++] = ch;
+	return (1);/* Always return 1 */
 }
 
 /**
- * WFileDescreptor - writes the character c to given fileDes
- * @x: The character to print
- * @fileDes: The filedescriptor to write to
+ * WFileDescreptor - Writes a character to a file descriptor.
+ * @x: The character to be written.
+ * @fileDes: The file descriptor to write to.
  *
- * Return: On success 1.
- * On error, return -1, and errno is set acording to errno stander.
+ * This function manages a static buffer to accumulate characters and flushes
+ * the buffer when it reaches a specified size or when a flush character is
+ * encountered. It writes characters to the specified file descriptor.
+ *
+ * Return: Always returns 1.
  */
 int WFileDescreptor(char x, int fileDes)
 {
+	/* Static variables for buffer management */
 	static int z;
 	static char mybuff[writeBufferSize];
 
+	/* Check for buffer flush condition or buffer size limit */
 	if (x == bufferFlush || z >= writeBufferSize)
 	{
+/*Flush the buffer by writing its content to the specified file descriptor*/
 		write(fileDes, mybuff, z);
-		z = 0;
+		z = 0;/* Reset buffer index after flushing */
 	}
+	 /* If not a buffer flush character, store the character in the buffer */
 	if (x != bufferFlush)
 		mybuff[z++] = x;
+	/* Always return 1 */
 	return (1);
 }
 
 /**
- *charsCount - prints an input string
- * @string: the string to be printed
- * @fileDes: the filedescriptor to write to
+ * charsCount - Writes characters from a string to a file descriptor
+ * and counts them.
+ * @string: The string containing characters to be written.
+ * @fileDes: The file descriptor to which characters are written.
  *
- * Return: the number of chars put
+ * This function iterates through characters of the input string,writes each
+ * character to the specified file descriptor using WFileDescreptor, and counts
+ * the number of characters written.
+ *
+ * Return: The total number of characters written.
  */
 int charsCount(char *string, int fileDes)
 {
-	int i = 0;
+	int x = 0;
 
+	 /* Check if the input string is NULL */
 	if (!string)
 		return (0);
+	/* Iterate through the characters of the input string */
 	while (*string)
 	{
-		i += WFileDescreptor(*string++, fileDes);
+/*Write each character to the specified file descriptor and increment count*/
+		x += WFileDescreptor(*string++, fileDes);
 	}
-	return (i);
+	/* Return the total number of characters written */
+	return (x);
 }
