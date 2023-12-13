@@ -1,91 +1,119 @@
 #include "header.h"
 
 /**
- * our_environ - returns the string array copy of our environ
- * @infolist: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * our_environ - Retrieves or updates the environment variable list.
+ * @infolist: Pointer to the infolist structure.
+ *
+ * This function returns the current environment variable list if it exists.
+ * If the environment has changed, it updates the environment variable list
+ * based on the contents of infolist->envir.
+ *
+ * Return: The environment variable list.
  */
 char **our_environ(infolist_t *infolist)
 {
+	/* Check if the environment variable list is not present or needs update*/
 	if (!infolist->environ || infolist->isenvchange)
 	{
+		/* Convert the linked list of environment variables to a string array*/
 		infolist->environ = listToStrings(infolist->envir);
+		/* Reset the environment change flag */
 		infolist->isenvchange = 0;
 	}
-
+	/* Return the environment variable list */
 	return (infolist->environ);
 }
 
 /**
- * remov_environ - Remove an environ variable
- * @infolist: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: 1 on delete, 0 otherwise
- * @var: the string envir var property
+ * remov_environ - Removes environment variables matching a specified prefix.
+ * @infolist: Pointer to the infolist structure.
+ * @var_prop: The prefix of the environment variables to be removed.
+ *
+ * This function removes environment variables whose names start with the
+ * specified prefix (var_prop) from the linked list of environment
+ * variables (infolist->envir).
+ * Return: 1 if any environment variable is removed, 0 otherwise.
  */
-int remov_environ(infolist_t *infolist, char *var)
+int remov_environ(infolist_t *infolist, char *var_prop)
 {
-	stringlist_t *node = infolist->envir;
-	size_t i = 0;
-	char *p;
+	stringlist_t *my_node = infolist->envir;
+	size_t x = 0;
+	char *ptr;
 
-	if (!node || !var)
+	/* Check if the environment variable list or the specified prefix is NULL*/
+	if (!my_node || !var_prop)
 		return (0);
 
-	while (node)
+		/* Iterate through the linked list of environment variables */
+	while (my_node)
 	{
-		p = startsWith(node->string, var);
-		if (p && *p == '=')
+	/* Check if the environment variable starts with the specified prefix*/
+		ptr = startsWith(my_node->string, var_prop);
+		if (ptr && *ptr == '=')
 		{
-			infolist->isenvchange = deletNode(&(infolist->envir), i);
-			i = 0;
-			node = infolist->envir;
+			/* Remove the environment variable and update the change flag */
+			infolist->isenvchange = deletNode(&(infolist->envir), x);
+			/* Reset the index and start over from the beginning of the list*/
+			x = 0;
+			my_node = infolist->envir;
 			continue;
 		}
-		node = node->next_node;
-		i++;
+		/* Move to the next node in the linked list */
+		my_node = my_node->next_node;
+		x++;
 	}
+/*Return the environment change flag indicating if any variable was removed*/
 	return (infolist->isenvchange);
 }
 
 /**
- * init_env_var - Initialize a new environ variable,
- *             or modify an existing one
- * @infolist: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * @var: the string envir var property
- * @value: the string envir var value
- *  Return: Always 0
+ * init_env_var - Initializes or updates an environment variable.
+ * @infolist: Pointer to the infolist structure.
+ * @var_prop: The name of the environment variable.
+ * @var_value: The value to be assigned to the environment variable.
+ *
+ * This function initializes or updates an environment variable in the linked
+ * listof environment variables (infolist->envir). If the variable already
+ * exists, its value is updated; otherwise a new variable is added to the list
+ *
+ * Return: 0 on success, 1 on memory allocation failure.
  */
-int init_env_var(infolist_t *infolist, char *var, char *value)
+int init_env_var(infolist_t *infolist, char *var_prop, char *var_value)
 {
+	char *ptr;
 	char *mybuff = NULL;
-	stringlist_t *node;
-	char *p;
+	stringlist_t *my_node;
 
-	if (!var || !value)
+	/* Check if the variable name or value is NULL */
+	if (!var_prop || !var_value)
 		return (0);
 
-	mybuff = malloc(getStringLength(var) + getStringLength(value) + 2);
+	/* Allocate memory for the environment variable string */
+	mybuff = malloc(getStringLength(var_prop) + getStringLength(var_value) + 2);
 	if (!mybuff)
 		return (1);
-	copyStrings(mybuff, var);
+	/* Construct the environment variable string: name=value */
+	copyStrings(mybuff, var_prop);
 	concatenetStrings(mybuff, "=");
-	concatenetStrings(mybuff, value);
-	node = infolist->envir;
-	while (node)
+	concatenetStrings(mybuff, var_value);
+	/* Traverse the linked list of environment variables */
+	my_node = infolist->envir;
+	while (my_node)
 	{
-		p = startsWith(node->string, var);
-		if (p && *p == '=')
+		/* Check if the environment variable already exists */
+		ptr = startsWith(my_node->string, var_prop);
+		if (ptr && *ptr == '=')
 		{
-			free(node->string);
-			node->string = mybuff;
+			/* Update the existing environment variable */
+			free(my_node->string);
+			my_node->string = mybuff;
 			infolist->isenvchange = 1;
 			return (0);
 		}
-		node = node->next_node;
+		/* Move to the next node in the linked list */
+		my_node = my_node->next_node;
 	}
+	/* Add a new environment variable to the linked list */
 	ADDnodeEn(&(infolist->envir), mybuff, 0);
 	free(mybuff);
 	infolist->isenvchange = 1;
