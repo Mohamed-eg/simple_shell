@@ -67,7 +67,7 @@ int StrToInt(char *str)
 		}
 /* Stop processing when a non-digit character is encountered after digits */
 		else if (my_flag == 1)
-			flag = 2;
+			my_flag = 2;
 	}
 
 	if (my_sign == -1)
