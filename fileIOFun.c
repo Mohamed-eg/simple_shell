@@ -93,6 +93,7 @@ int r_history(infolist_t *infolist)
 
 	if (!file_n)/*If the history file name cannot be obtained, return failure*/
 		return (0);
+
 	fileDes = open(file_n, O_RDONLY);/* Open the history file for reading */
 	free(file_n);/* Free the allocated memory for the history file name */
 	if (fileDes == -1)/*If the file descriptor cannot be obtained, return fail*/
@@ -121,7 +122,6 @@ int r_history(infolist_t *infolist)
 	free(buffer);/* Free the buffer memory */
 	/* Update the number of history entries in the infolist structure */
 	infolist->histnum = l_num;
-	/* Trim history entries if the count exceeds the maximum allowed */
 	while (infolist->histnum-- >= maxHistory)
 		deletNode(&(infolist->my_history), 0);
 	renumberHistory(infolist);/* Renumber the history entries */
