@@ -60,19 +60,19 @@ int remov_environ(infolist_t *infolist, char *var)
  */
 int init_env_var(infolist_t *infolist, char *var, char *value)
 {
-	char *buf = NULL;
+	char *mybuff = NULL;
 	stringlist_t *node;
 	char *p;
 
 	if (!var || !value)
 		return (0);
 
-	buf = malloc(getStringLength(var) + getStringLength(value) + 2);
-	if (!buf)
+	mybuff = malloc(getStringLength(var) + getStringLength(value) + 2);
+	if (!mybuff)
 		return (1);
-	copyStrings(buf, var);
-	concatenetStrings(buf, "=");
-	concatenetStrings(buf, value);
+	copyStrings(mybuff, var);
+	concatenetStrings(mybuff, "=");
+	concatenetStrings(mybuff, value);
 	node = infolist->envir;
 	while (node)
 	{
@@ -80,14 +80,14 @@ int init_env_var(infolist_t *infolist, char *var, char *value)
 		if (p && *p == '=')
 		{
 			free(node->string);
-			node->string = buf;
+			node->string = mybuff;
 			infolist->isenvchange = 1;
 			return (0);
 		}
 		node = node->next_node;
 	}
-	ADDnodeEn(&(infolist->envir), buf, 0);
-	free(buf);
+	ADDnodeEn(&(infolist->envir), mybuff, 0);
+	free(mybuff);
 	infolist->isenvchange = 1;
 	return (0);
 }

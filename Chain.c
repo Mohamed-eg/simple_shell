@@ -3,30 +3,30 @@
 /**
  * isChain - test if current char in buffer is a chain delimeter
  * @infolist: the parameter struct
- * @buf: the char buffer
- * @p: address of current position in buf
+ * @mybuff: the char buffer
+ * @p: address of current position in mybuff
  *
  * Return: 1 if chain delimeter, 0 otherwise
  */
-int isChain(infolist_t *infolist, char *buf, size_t *p)
+int isChain(infolist_t *infolist, char *mybuff, size_t *p)
 {
 	size_t j = *p;
 
-	if (buf[j] == '|' && buf[j + 1] == '|')
+	if (mybuff[j] == '|' && mybuff[j + 1] == '|')
 	{
-		buf[j] = 0;
+		mybuff[j] = 0;
 		j++;
 		infolist->cmdBufferTybe = orChain;
 	}
-	else if (buf[j] == '&' && buf[j + 1] == '&')
+	else if (mybuff[j] == '&' && mybuff[j + 1] == '&')
 	{
-		buf[j] = 0;
+		mybuff[j] = 0;
 		j++;
 		infolist->cmdBufferTybe = andChain;
 	}
-	else if (buf[j] == ';') /* found end of this command */
+	else if (mybuff[j] == ';') /* found end of this command */
 	{
-		buf[j] = 0; /* replace semicolon with null */
+		mybuff[j] = 0; /* replace semicolon with null */
 		infolist->cmdBufferTybe = cmdChain;
 	}
 	else
@@ -38,15 +38,15 @@ int isChain(infolist_t *infolist, char *buf, size_t *p)
 /**
  * checkChain - checks we should continue chaining based on last status
  * @infolist: the parameter struct
- * @buf: the char buffer
- * @p: address of current position in buf
- * @i: starting position in buf
- * @len: length of buf
+ * @mybuff: the char buffer
+ * @p: address of current position in mybuff
+ * @i: starting position in mybuff
+ * @mylen: length of mybuff
  *
  * Return: Void
  */
-void checkChain(infolist_t *infolist, char *buf, size_t *p, size_t i,
-size_t len)
+void checkChain(infolist_t *infolist, char *mybuff, size_t *p, size_t i,
+size_t mylen)
 {
 	size_t j = *p;
 
@@ -54,16 +54,16 @@ size_t len)
 	{
 		if (infolist->my_status)
 		{
-			buf[i] = 0;
-			j = len;
+			mybuff[i] = 0;
+			j = mylen;
 		}
 	}
 	if (infolist->cmdBufferTybe == orChain)
 	{
 		if (!infolist->my_status)
 		{
-			buf[i] = 0;
-			j = len;
+			mybuff[i] = 0;
+			j = mylen;
 		}
 	}
 

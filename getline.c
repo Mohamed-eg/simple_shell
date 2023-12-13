@@ -1,170 +1,176 @@
 #include "header.h"
 
 /**
- * input_buf - buffers chained commands
- * @infolist: parameter struct
- * @buf: address of buffer
- * @len: address of len var
+ * inputBuffer - Read a line of input into a buffer.
+ * @infolist: Pointer to the infolist_t structure containing information.
+ * @mybuff: Pointer to the buffer where the input line is stored.
+ * @mylen: Pointer to the size of the buffer.
  *
- * Return: bytes read
+ * Return: The number of characters read, or -1 on failure.
  */
-ssize_t input_buf(infolist_t *infolist, char **buf, size_t *len)
+ssize_t inputBuffer(infolist_t *infolist, char **mybuff, size_t *mylen)
 {
-	ssize_t r = 0;
-	size_t len_p = 0;
+	ssize_t x = 0;
+	size_t p_lenth = 0;
 
-	if (!*len) /* if nothing left in the buffer, fill it */
+	if (!*mylen)
 	{
 		/*freePointers((void **)infolist->cmdBuffer);*/
-		free(*buf);
-		*buf = NULL;
-		signal(SIGINT, hamdelSigin);
-#if useGetLine
-		r = getline(buf, &len_p, stdin);
-#else
-		r = getNextLine(infolist, buf, &len_p);
+		free(*mybuff);
+		*mybuff = NULL;/* Set up a signal handler for SIGINT */
+		signal(SIGINT, hamdelSigin);/*come form <signal.h>*/
+#if useGetLine/* Read input line using getline or getNextLine */
+		x = getline(mybuff, &p_lenth, stdin);/*from <stdio>*/
+#else/*getline() is used to read a line of text from stdin*/
+		x = getNextLine(infolist, mybuff, &p_lenth);
 #endif
-		if (r > 0)
-		{
-			if ((*buf)[r - 1] == '\n')
+		if (x > 0)
+		{/* Remove trailing newline if present */
+			if ((*mybuff)[x - 1] == '\n')
 			{
-				(*buf)[r - 1] = '\0'; /* remove trailing newline */
-				r--;
+				(*mybuff)[x - 1] = '\0';
+				x--;
 			}
 			infolist->linenumflag = 1;
-			remove_comments(*buf);
-			buildHistoryList(infolist, *buf, infolist->histnum++);
-			/* if (locateChar(*buf, ';')) is this a command chain? */
+			re_comm(*mybuff);
+			buildHistoryList(infolist, *mybuff, infolist->histnum++);
 			{
-				*len = r;
-				infolist->cmdBuffer = buf;
+				*mylen = x;
+				infolist->cmdBuffer = mybuff;
 			}
 		}
 	}
-	return (r);
+	return (x);
 }
 
 /**
- * getInput - gets a line minus the newline
- * @infolist: parameter struct
+ * getInput - Get input from the user and process command chains.
+ * @infolist: Pointer to the infolist_t structure containing information.
  *
- * Return: bytes read
+ * Return: The bufsize of the current command, or -1 on EOF.
  */
 ssize_t getInput(infolist_t *infolist)
 {
-	static char *buf; /* the ';' command chain buffer */
-	static size_t i, j, len;
-	ssize_t r = 0;
-	char **buf_p = &(infolist->argument), *p;
+	static char *mybuff;
+	static size_t iter, y, mylen;
+	ssize_t x = 0;
+	char **p_beff = &(infolist->argument), *p;
 
 	PutCharacter(bufferFlush);
-	r = input_buf(infolist, &buf, &len);
-	if (r == -1) /* EOF */
+	x = inputBuffer(infolist, &mybuff, &mylen);
+	if (x == -1)
 		return (-1);
-	if (len)	/* we have commands left in the chain buffer */
+	if (mylen)
 	{
-		j = i; /* init new iterator to current buf position */
-		p = buf + i; /* get pointer for return */
+		y = iter;
+		p = mybuff + iter;
 
-		checkChain(infolist, buf, &j, i, len);
-		while (j < len) /* iterate to semicolon or end */
+		/* Check for command chain and update iterators */
+		checkChain(infolist, mybuff, &y, iter, mylen);
+		while (y < mylen)
 		{
-			if (isChain(infolist, buf, &j))
+			if (isChain(infolist, mybuff, &y))
 				break;
-			j++;
+			y++;
 		}
 
-		i = j + 1; /* increment past nulled ';'' */
-		if (i >= len) /* reached end of buffer? */
+		iter = y + 1;
+		if (iter >= mylen)
 		{
-			i = len = 0; /* reset position and length */
+			iter = mylen = 0;
 			infolist->cmdBufferTybe = cmdNormal;
 		}
 
-		*buf_p = p; /* pass back pointer to current command position */
-		return (getStringLength(p)); /* return length of current command */
+		*p_beff = p;
+		return (getStringLength(p));
 	}
 
-	*buf_p = buf; /* else not a chain, pass back buffer from getNextLine() */
-	return (r); /* return length of buffer from getNextLine() */
+	*p_beff = mybuff;
+	return (x);
 }
 
 /**
- * read_buf - reads a buffer
- * @infolist: parameter struct
- * @buf: buffer
- * @i: size
+ * readBuffer - Read data from a file descriptor into a buffer.
+ * @infolist: Pointer to the infolist_t structure containing information.
+ * @mybuff: Pointer to the buffer where data will be stored.
+ * @iter: Pointer to the current position in the buffer.
  *
- * Return: r
+ * Return: The number of bytes read, or -1 on error.
  */
-ssize_t read_buf(infolist_t *infolist, char *buf, size_t *i)
+ssize_t readBuffer(infolist_t *infolist, char *mybuff, size_t *iter)
 {
-	ssize_t r = 0;
+	ssize_t x = 0;
 
-	if (*i)
-		return (0);
-	r = read(infolist->rfd, buf, readBufferSize);
-	if (r >= 0)
-		*i = r;
-	return (r);
+/* If the current position is not at the beginning of the buffer, return 0 */
+	if (*iter)
+		return (0);/* Read data from the file descriptor into the buffer */
+	x = read(infolist->rfd, mybuff, readBufferSize);
+/* If data was read successfully, update the current position */
+	if (x >= 0)
+		*iter = x;
+	return (x);
 }
 
 /**
- * getNextLine - gets the next line of input from STDIN
- * @infolist: parameter struct
- * @ptr: address of pointer to buffer, preallocated or NULL
- * @length: size of preallocated ptr buffer if not NULL
+ * getNextLine - Read the next line from a file descriptor into a buffer.
+ * @infolist: Pointer to the infolist_t structure containing information.
+ * @stoline: Pointer to the buffer where the line will be stored.
+ * @bufsize: Pointer to the size of the buffer.
  *
- * Return: s
+ * Return: The number of characters read, or -1 on error or EOF.
  */
-int getNextLine(infolist_t *infolist, char **ptr, size_t *length)
+int getNextLine(infolist_t *infolist, char **stoline, size_t *bufsize)
 {
-	static char buf[readBufferSize];
-	static size_t i, len;
-	size_t k;
-	ssize_t r = 0, s = 0;
-	char *p = NULL, *new_p = NULL, *c;
+	static char mybuff[readBufferSize];
+	static size_t iter, mylen;
+	size_t z;
+	ssize_t x = 0, st = 0;
+	char *ptr = NULL, *newPtr = NULL, *chr;
 
-	p = *ptr;
-	if (p && length)
-		s = *length;
-	if (i == len)
-		i = len = 0;
+	ptr = *stoline;
+	/* If the buffer and bufsize are provided, store the current bufsize */
+	if (ptr && bufsize)
+		st = *bufsize;
+	/* Reset indices if the buffer is fully processed */
+	if (iter == mylen)
+		iter = mylen = 0;
 
-	r = read_buf(infolist, buf, &len);
-	if (r == -1 || (r == 0 && len == 0))
+	x = readBuffer(infolist, mybuff, &mylen);/* Read data into the buffer */
+	if (x == -1 || (x == 0 && mylen == 0))/* Check for read errors or EOF */
 		return (-1);
 
-	c = locateChar(buf + i, '\n');
-	k = c ? 1 + (unsigned int)(c - buf) : len;
-	new_p = reAllocat(p, s, s ? s + k : k + 1);
-	if (!new_p) /* MALLOC FAILURE! */
-		return (p ? free(p), -1 : -1);
+	/* Find the next newline character in the buffer */
+	chr = locateChar(mybuff + iter, '\n');
+	z = chr ? 1 + (unsigned int)(chr - mybuff) : mylen;
+	/* Reallocate memory for the buffer */
+	newPtr = reAllocat(ptr, st, st ? st + z : z + 1);
+	if (!newPtr) /* Handle memory allocation failure */
+		return (ptr ? free(ptr), -1 : -1);
 
-	if (s)
-		concatenatesStrings(new_p, buf + i, k - i);
+	if (st)/* Concatenate the new data to the buffer */
+		concatenatesStrings(newPtr, mybuff + iter, z - iter);
 	else
-		StringCopy(new_p, buf + i, k - i + 1);
+		StringCopy(newPtr, mybuff + iter, z - iter + 1);
+	st += z - iter;
+	iter = z;
+	ptr = newPtr;
 
-	s += k - i;
-	i = k;
-	p = new_p;
-
-	if (length)
-		*length = s;
-	*ptr = p;
-	return (s);
+	if (bufsize)/* Update the bufsize and buffer pointers */
+		*bufsize = st;
+	*stoline = ptr;
+	return (st);
 }
 
 /**
- * hamdelSigin - blocks ctrl-C
- * @sig_num: the signal number
+ * hamdelSigin - Signal handler for SIGINT (Ctrl+C).
+ * @sig_num: The signal number (unused).
  *
  * Return: void
  */
 void hamdelSigin(__attribute__((unused))int sig_num)
 {
-	Puts("\n");
-	Puts("$ ");
-	PutCharacter(bufferFlush);
+	Puts("\n");/* Print a newline character */
+	Puts("$ ");/* Print the shell prompt */
+	PutCharacter(bufferFlush);/* Flush the output buffer */
+
 }

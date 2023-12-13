@@ -28,6 +28,7 @@
 */
 #include <errno.h>
 #include <stddef.h> /*for size_t data type*/
+#include <signal.h> /*for signal() and SIGINT constant*/
 
 /* 1 if using system getline() */
 #define useGetLine 0
@@ -188,7 +189,7 @@ int StringToInteger(char *);
 void PrintError(infolist_t *, char *);
 int printDescriptor(int, int);
 char *convert_number(long int, int, int);
-void remove_comments(char *);
+void re_comm(char *);
 
 /* builtinEmulators.c */
 int exitEmulator(infolist_t *);
@@ -225,7 +226,7 @@ int init_env_var(infolist_t *, char *, char *);
 char *getFileHistory(infolist_t *infolist);
 int w_history(infolist_t *infolist);
 int r_history(infolist_t *infolist);
-int buildHistoryList(infolist_t *infolist, char *buf, int linecount);
+int buildHistoryList(infolist_t *infolist, char *mybuff, int linecount);
 int renumberHistory(infolist_t *infolist);
 
 /* stringList.c advans */

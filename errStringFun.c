@@ -29,15 +29,15 @@ void errPrintStr(char *string)
 int errPrintChar(char c)
 {
 	static int i;
-	static char buf[writeBufferSize];
+	static char mybuff[writeBufferSize];
 
 	if (c == bufferFlush || i >= writeBufferSize)
 	{
-		write(2, buf, i);
+		write(2, mybuff, i);
 		i = 0;
 	}
 	if (c != bufferFlush)
-		buf[i++] = c;
+		mybuff[i++] = c;
 	return (1);
 }
 
@@ -52,15 +52,15 @@ int errPrintChar(char c)
 int WFileDescreptor(char x, int fileDes)
 {
 	static int z;
-	static char buf[writeBufferSize];
+	static char mybuff[writeBufferSize];
 
 	if (x == bufferFlush || z >= writeBufferSize)
 	{
-		write(fileDes, buf, z);
+		write(fileDes, mybuff, z);
 		z = 0;
 	}
 	if (x != bufferFlush)
-		buf[z++] = x;
+		mybuff[z++] = x;
 	return (1);
 }
 

@@ -42,19 +42,19 @@ int PutCharacter(char x)
 {
 	/*Define a static buffer and its size*/
 	static int i;
-	static char buf[writeBufferSize];
+	static char mybuff[writeBufferSize];
 
 	/*Check if the character is the flush trigger or the buffer is full*/
 	if (x == bufferFlush || i >= writeBufferSize)
 	{
 	/*Flush the buffer to the standard output*/
-		write(1, buf, i);
+		write(1, mybuff, i);
 	/*Reset the buffer index*/
 		i = 0;
 	}
 	/*Buffer the character if it is not the flush trigger*/
 	if (x != bufferFlush)
-		buf[i++] = x;
+		mybuff[i++] = x;
 	/*Indicate success*/
 	return (1);
 }

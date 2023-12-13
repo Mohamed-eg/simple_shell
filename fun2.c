@@ -144,19 +144,19 @@ char *convert_number(long int number, int base, int flags)
 }
 
 /**
- * remove_comments - function replaces first instance of '#' with '\0'
- * @buf: address of the string to modify
+ * re_comm - function replaces first instance of '#' with '\0'
+ * @mybuff: address of the string to modify
  *
  * Return: Always 0;
  */
-void remove_comments(char *buf)
+void re_comm(char *mybuff)
 {
 	int i;
 
-	for (i = 0; buf[i] != '\0'; i++)
-		if (buf[i] == '#' && (!i || buf[i - 1] == ' '))
+	for (i = 0; mybuff[i] != '\0'; i++)
+		if (mybuff[i] == '#' && (!i || mybuff[i - 1] == ' '))
 		{
-			buf[i] = '\0';
+			mybuff[i] = '\0';
 			break;
 		}
 }
