@@ -31,10 +31,10 @@ This simple shell project is designed to demonstrate a basic understanding of Un
 $ git clone https://github.com/Mohamed-eg/simple_shell.git
 ```
 ### compile
-To compile the simple shell, use the provided Makefile:
+To compile the simple shell, use the provided command on your bush:
 
 ```bash
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+$ gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
 ### Note make shore you have instaled cpp compiler
 
