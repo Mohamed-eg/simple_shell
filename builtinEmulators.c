@@ -26,7 +26,7 @@ int exitEmulator(infolist_t *infolist)
 		{
 			/* Set error code to 2 and print an error message */
 			infolist->my_status = 2;
-			PrintError(infolist, "That is numper is illegal: ");
+			PrintError(infolist, "Illegal number: ");
 			errPrintStr(infolist->argument_v[1]);
 			errPrintChar('\n');
 			return (1);/* Return 1 to indicate an illegal numeric argument */
