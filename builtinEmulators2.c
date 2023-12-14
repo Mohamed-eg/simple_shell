@@ -1,117 +1,158 @@
 #include "header.h"
 
 /**
- * historyEmulator - displays the history list, one command by line, preceded
- *              with line numbers, starting at 0.
- * @infolist: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: Always 0
+ * historyEmulator - Displays the command history.
+ * @infolist: Pointer to the infolist structure.
+ *
+ * This function displays the command history stored in the infolist structure.
+ * It prints each command along with its corresponding line number.
+ *
+ * Return: Always returns 0.
  */
 int historyEmulator(infolist_t *infolist)
 {
+	/* Call the elementList function to display the command history */
 	elementList(infolist->my_history);
+	 /* Always return 0 */
 	return (0);
 }
 
 /**
- * unset_alias - sets alias to string
- * @infolist: parameter struct
- * @string: the string alias
+ * removeAlias - Removes an alias from the alias list.
+ * @infolist: Pointer to the infolist structure.
+ * @string: The alias to be removed.
  *
- * Return: Always 0 on success, 1 on error
+ * This function removes the specified alias from the alias list stored
+ * in the infolist structure. The alias is identified by its name, and the
+ * function updates the alias list accordingly.
+ *
+ * Return: 1 on success, 0 on failure.
  */
-int unset_alias(infolist_t *infolist, char *string)
+int removeAlias(infolist_t *infolist, char *string)
 {
-	char *p, c;
-	int ret;
+	int restr;
+	char *ptr, chr;
 
-	p = locateChar(string, '=');
-	if (!p)
+	/* Locate the position of the '=' character in the alias */
+	ptr = locateChar(string, '=');
+	if (!ptr)
 		return (1);
-	c = *p;
-	*p = 0;
-	ret = deletNode(&(infolist->my_alias),
+	/* Temporarily replace '=' with null character to extract the alias name*/
+	chr = *ptr;
+	*ptr = 0;
+	/* Remove the alias by calling the deletNode function */
+	restr = deletNode(&(infolist->my_alias),
 		nodeIndex(infolist->my_alias,
 		nodeStartWith(infolist->my_alias, string, -1)));
-	*p = c;
-	return (ret);
+	/* Restore the original character at the '=' position */
+	*ptr = chr;
+	/* Return 1 on success, 0 on failure */
+	return (restr);
 }
 
 /**
- * set_alias - sets alias to string
- * @infolist: parameter struct
- * @string: the string alias
+ * defineAlias - Defines or updates an alias in the alias list.
+ * @infolist: Pointer to the infolist structure.
+ * @string: The alias definition string.
  *
- * Return: Always 0 on success, 1 on error
+ * This function defines or updates an alias in the alias list stored
+ * in the infolist structure. If the alias already exists, it is updated;
+ * otherwise, a new alias is added to the list.
+ *
+ * Return: 1 on success, 0 on failure.
  */
-int set_alias(infolist_t *infolist, char *string)
+int defineAlias(infolist_t *infolist, char *string)
 {
-	char *p;
+	char *ptr;
 
-	p = locateChar(string, '=');
-	if (!p)
+	/* Locate the position of the '=' character in the alias definition */
+	ptr = locateChar(string, '=');
+	if (!ptr)
 		return (1);
-	if (!*++p)
-		return (unset_alias(infolist, string));
+	/* Check if the alias definition string is empty after '=' */
+	if (!*++ptr)
+		return (removeAlias(infolist, string));
 
-	unset_alias(infolist, string);
+	/* Remove the existing alias and add the new one to the list */
+	removeAlias(infolist, string);
 	return (ADDnodeEn(&(infolist->my_alias), string, 0) == NULL);
 }
 
 /**
- * print_alias - prints an alias string
- * @node: the alias node
+ * prtAlias - Prints an alias definition.
+ * @my_node: Pointer to the stringlist node representing the alias.
  *
- * Return: Always 0 on success, 1 on error
+ * This function prints the definition of an alias stored in the provided
+ * stringlist node. The alias definition is printed in the format 'alias_name'
+ * 'alias_value'\n.
+ *
+ * Return: 0 on success, 1 if the provided node is NULL.
  */
-int print_alias(stringlist_t *node)
+int prtAlias(stringlist_t *my_node)
 {
-	char *p = NULL, *a = NULL;
+	char *ptr = NULL, *m = NULL;
 
-	if (node)
+	/* Check if the provided node is not NULL */
+	if (my_node)
 	{
-		p = locateChar(node->string, '=');
-		for (a = node->string; a <= p; a++)
-			PutCharacter(*a);
+/* Locate the position of the '=' character in the alias definition */
+		ptr = locateChar(my_node->string, '=');
+/* Loop through the characters of the alias name and print each one */
+		for (m = my_node->string; m <= ptr; m++)
+			PutCharacter(*m);
+/* Print a single quote to separate the alias name from the value */
 		PutCharacter('\'');
-		Puts(p + 1);
+/* Print the alias value starting from the character after '=' */
+		Puts(ptr + 1);
+/* Print a new line character to end the alias definition */
 		Puts("'\n");
+/* Return 0 to indicate success */
 		return (0);
 	}
+	/* Return 1 to indicate failure if the provided node is NULL */
 	return (1);
 }
 
 /**
- * aliasEmulator - mimics the alias Builtin_Comands (man alias)
- * @infolist: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
+ * aliasEmulator - Emulates the 'alias' command functionality.
+ * @infolist: Pointer to the infolist structure.
+ *
+ * This function emulates the behavior of the 'alias' command.If called without
+ * arguments,it prints all defined aliases.If called with arguments,it defines
+ * new aliases or prints the definitions of existing ones.
+ *
+ * Return: Always returns 0.
  */
 int aliasEmulator(infolist_t *infolist)
 {
-	int i = 0;
-	char *p = NULL;
-	stringlist_t *node = NULL;
+	char *ptr = NULL;
+	int x = 0;
+	stringlist_t *my_node = NULL;
 
+	/* Check if the 'alias' command is called without arguments */
 	if (infolist->argument_c == 1)
 	{
-		node = infolist->my_alias;
-		while (node)
+		/* Loop through all defined aliases and print their definitions */
+		my_node = infolist->my_alias;
+		while (my_node)
 		{
-			print_alias(node);
-			node = node->next_node;
+			prtAlias(my_node);
+			my_node = my_node->next_node;
 		}
 		return (0);
 	}
-	for (i = 1; infolist->argument_v[i]; i++)
+/*Loop through the provided arguments and define or print aliases accordingly*/
+	for (x = 1; infolist->argument_v[x]; x++)
 	{
-		p = locateChar(infolist->argument_v[i], '=');
-		if (p)
-			set_alias(infolist, infolist->argument_v[i]);
+		/* Locate the position of the '=' character in the argument */
+		ptr = locateChar(infolist->argument_v[x], '=');
+/* Check if '=' is present to decide whether to define or print the alias */
+		if (ptr)
+			defineAlias(infolist, infolist->argument_v[x]);
 		else
-			print_alias(nodeStartWith(infolist->my_alias,
-		infolist->argument_v[i], '='));
+			prtAlias(nodeStartWith(infolist->my_alias,
+		infolist->argument_v[x], '='));
 	}
-
+	/* Always return 0 */
 	return (0);
 }
