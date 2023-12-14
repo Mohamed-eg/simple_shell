@@ -33,9 +33,6 @@ gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
 ## Installation
 
-Install my-project with git!
-
-
 ```bash
-https://github.com/Mohamed-eg/simple_shell.git
+$ git clone https://github.com/Mohamed-eg/simple_shell.git
 ```
