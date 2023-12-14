@@ -33,7 +33,7 @@ gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
 ## Installation
 
-Install my-project with [git](https://img.shields.io/git/dt/:packageName)!
+Install my-project with git!
 
 
 ```bash
