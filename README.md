@@ -24,7 +24,7 @@ This simple shell project is designed to demonstrate a basic understanding of Un
 - Basic error handling
 - ...
 
-## Getting Started
+## Getting Started 🚀
 ### Installation
 
 ```bash
