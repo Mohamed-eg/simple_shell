@@ -30,11 +30,11 @@ This simple shell project is designed to demonstrate a basic understanding of Un
 ```bash
 $ git clone https://github.com/Mohamed-eg/simple_shell.git
 ```
-###compile
+### compile
 To compile the simple shell, use the provided Makefile:
 
 ```bash
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
-###Note make shore you have instaled cpp compiler
+### Note make shore you have instaled cpp compiler
 
